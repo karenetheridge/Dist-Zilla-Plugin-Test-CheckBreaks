@@ -11,9 +11,10 @@ with (
     'Dist::Zilla::Role::TextTemplate',
 );
 use Module::Metadata;
+use Path::Tiny;
 use namespace::autoclean;
 
-sub filename { 't/zzz-check-breaks.t' }
+sub filename { path('t', 'zzz-check-breaks.t') }
 
 sub gather_files
 {
@@ -22,7 +23,7 @@ sub gather_files
     require Dist::Zilla::File::InMemory;
 
     $self->add_file( Dist::Zilla::File::InMemory->new(
-        name => $self->filename,
+        name => $self->filename->stringify,
         content => <<'TEST',
 use strict;
 use warnings;
