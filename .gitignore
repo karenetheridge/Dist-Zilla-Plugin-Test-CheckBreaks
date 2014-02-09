@@ -1,0 +1,4 @@
+/.build/
+!.gitignore
+/Dist-Zilla-Plugin-Test-CheckBreaks-*/
+/Dist-Zilla-Plugin-Test-CheckBreaks-*.tar.gz
