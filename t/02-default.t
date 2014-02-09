@@ -1,11 +1,7 @@
-use strict;
-use warnings FATAL => 'all';
-
 use Test::More;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
 use Test::DZil;
 use Path::Tiny;
-use File::pushd;
 
 my $tzil = Builder->from_config(
     { dist_root => 't/does-not-exist' },
@@ -13,9 +9,9 @@ my $tzil = Builder->from_config(
         add_files => {
             'source/dist.ini' => simple_ini(
                 [ GatherDir => ],
-                [ 'Test::CheckBreaks' => { conflicts_module => 'Moose::Conflicts' } ],
+                [ 'Test::CheckBreaks' => ],
             ),
-            path(qw(source lib Foo.pm)) => "package Foo;\n1;\n",
+            path(qw(source lib Foo Bar.pm)) => "package Foo::Bar;\n1;\n",
         },
     },
 );
@@ -29,13 +25,6 @@ my $content = $file->slurp;
 unlike($content, qr/[^\S\n]\n/m, 'no trailing whitespace in generated test');
 
 like($content, qr/require $_;/m, "test checks $_")
-    for 'Moose::Conflicts';
-
-subtest 'run the generated test' => sub
-{
-    my $wd = File::pushd::pushd $build_dir;
-    do $file;
-    warn $@ if $@;
-};
+    for 'Foo::Bar::Conflicts';
 
 done_testing;
