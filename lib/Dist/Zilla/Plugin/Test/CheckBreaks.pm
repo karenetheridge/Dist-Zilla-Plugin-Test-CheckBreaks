@@ -185,7 +185,8 @@ In your F<dist.ini>:
 This is a L<Dist::Zilla> plugin that runs at the
 L<gather files|Dist::Zilla::Role::FileGatherer> stage, providing a test file
 that runs last in your test suite and checks for conflicting modules, as
-calculated by L<Dist::CheckConflicts>.
+calculated by L<Dist::CheckConflicts>.  (See the F<t/zzz-check-breaks.t> test
+in this distribution for an example.)
 
 In addition, the content of the C<x_breaks> meta field is checked in the test.
 It expects L<version ranges|CPAN::Meta::Spec#Version-Ranges>, with one
