@@ -212,6 +212,8 @@ If your distribution uses L<Moose> but does not itself generate a conflicts
 plugin, then C<Moose::Conflicts> is an excellent choice, as there are numerous
 interoperability conflicts catalogued in that module.
 
+=for Pod::Coverage filename gather_files munge_file register_prereqs
+
 =head1 SEE ALSO
 
 =over 4
