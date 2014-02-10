@@ -215,6 +215,24 @@ interoperability conflicts catalogued in that module.
 
 =for Pod::Coverage filename gather_files munge_file register_prereqs
 
+=head1 BACKGROUND
+
+I came upon this idea for a test after handling a
+L<bug report|https://rt.cpan.org/Ticket/Display.html?id=92780>
+I've seen many times before when dealing with L<Moose> code: "hey, when I
+updated Moose, my other thing that uses Moose stopped working!"  For quite
+some time Moose has generated breakage information in the form of the
+F<moose-outdated> executable and a check in F<Makefile.PL> (which uses the
+generated module C<Moose::Conflicts>), but the output is usually buried in the
+user's install log or way up in the console buffer, and so doesn't get acted
+on nearly as often as it should.  I realized it would be a simple matter to
+re-run the executable at the very end of tests by crafting a filename that
+always sorts (and runs) last, and further that we could generate this test.
+This coincided nicely with conversations on irc C<#toolchain> about the
+C<x_breaks> metadata field and plans for its future. Therefore, this
+distribution, and its sister plugin L<[Breaks]|Dist::Zilla::Plugin::Breaks>
+were born!
+
 =head1 SEE ALSO
 
 =over 4
