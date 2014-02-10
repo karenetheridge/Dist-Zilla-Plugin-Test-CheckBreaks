@@ -219,6 +219,8 @@ this is only a feature added for backwards compatibility.
 
 =head1 BACKGROUND
 
+=for stopwords irc
+
 I came upon this idea for a test after handling a
 L<bug report|https://rt.cpan.org/Ticket/Display.html?id=92780>
 I've seen many times before when dealing with L<Moose> code: "hey, when I
