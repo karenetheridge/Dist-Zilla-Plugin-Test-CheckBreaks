@@ -41,7 +41,7 @@ SKIP: {
         require Module::Runtime;
         my $filename = Module::Runtime::module_notional_filename($module);
         <<"CHECK_CONFLICTS";
-    eval { require ${module}; ${module}->check_conflicts };
+    eval { require '${module}'; ${module}->check_conflicts };
     if (\$INC{'$filename'}) {
         diag \$@ if \$@;
         pass 'conflicts checked via $module';
