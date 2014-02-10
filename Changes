@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          - fix error in how conflicts module was being loaded in the test
 
 0.001     2014-02-10 01:21:15Z
           - Initial release.
