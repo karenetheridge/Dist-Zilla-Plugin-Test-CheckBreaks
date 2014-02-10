@@ -19,6 +19,8 @@ my $tzil = Builder->from_config(
         },
     },
 );
+
+$tzil->chrome->logger->set_debug(1);
 $tzil->build;
 
 my $build_dir = $tzil->tempdir->subdir('build');
@@ -37,5 +39,7 @@ subtest 'run the generated test' => sub
     do $file;
     warn $@ if $@;
 };
+
+diag join("\n", 'log messages:', @{ $tzil->log_messages }) if not Test::Builder->new->is_passing;
 
 done_testing;

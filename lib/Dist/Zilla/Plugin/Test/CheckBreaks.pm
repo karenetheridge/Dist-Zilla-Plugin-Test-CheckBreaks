@@ -12,6 +12,8 @@ with (
 );
 use Module::Metadata;
 use Path::Tiny;
+use Module::Runtime 'module_notional_filename';
+use List::MoreUtils 'any';
 use namespace::autoclean;
 
 sub filename { path('t', 'zzz-check-breaks.t') }
@@ -32,10 +34,27 @@ use warnings;
 
 use Test::More;
 
-eval { require {{ $module }}; {{ $module }}->check_conflicts };
-diag $@ if $@;
-
-pass 'conflicts checked via {{ $module }}';
+SKIP: {
+{{
+    if ($module) {
+        require Module::Runtime;
+        my $filename = Module::Runtime::module_notional_filename($module);
+        <<"CHECK_CONFLICTS";
+    eval { require ${module}; ${module}->check_conflicts };
+    if (\$INC{'$filename'}) {
+        diag \$@ if \$@;
+        pass 'conflicts checked via $module';
+    }
+    else {
+        skip 'no $module module found', 1;
+    }
+CHECK_CONFLICTS
+    }
+    else
+    {
+        "    skip 'no conflicts module found to check against', 1;\n";
+    }
+}}}
 
 done_testing;
 TEST
@@ -43,18 +62,31 @@ TEST
 }
 
 has conflicts_module => (
-    is => 'ro', isa => 'Str',
+    is => 'ro', isa => 'Str|Undef',
     lazy => 1,
     default => sub {
         my $self = shift;
 
+        $self->log_debug('no conflicts_module provided; looking for one in the dist...');
         # TODO: use Dist::Zilla::Role::ModuleMetadata
-        my $file = $self->zilla->main_module;
-        open my $fh, sprintf('<encoding(%s)', $file->encoding), \$file->encoded_content
-            or $self->log_fatal('cannot open handle to ' . $file->name . ' content: ' . $!);
+        my $main_file = $self->zilla->main_module;
+        open my $fh, sprintf('<encoding(%s)', $main_file->encoding), \$main_file->encoded_content
+            or $self->log_fatal('cannot open handle to ' . $main_file->name . ' content: ' . $!);
 
-        my $mmd = Module::Metadata->new_from_handle($fh, $file->name);
+        my $mmd = Module::Metadata->new_from_handle($fh, $main_file->name);
         my $module = ($mmd->packages_inside)[0] . '::Conflicts';
+
+        # check that the file exists in the dist (it should never be shipped
+        # separately!)
+        my $conflicts_filename = module_notional_filename($module);
+        if (any { $_->name eq path('lib', $conflicts_filename) } @{ $self->zilla->files })
+        {
+            $self->log_debug($module . ' found');
+            return $module;
+        }
+
+        $self->log_debug('No ' . $module . ' found');
+        return undef;
     },
 );
 
