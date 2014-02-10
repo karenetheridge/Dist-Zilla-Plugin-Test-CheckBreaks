@@ -177,6 +177,9 @@ __PACKAGE__->meta->make_immutable;
 
 In your F<dist.ini>:
 
+    [Breaks]
+    Foo = <= 1.1    ; Foo at 1.1 or lower will break when I am installed
+
     [CheckBreaks]
     conflicts_module = Moose::Conflicts
 
