@@ -15,6 +15,8 @@ use Module::Metadata;
 use Path::Tiny;
 use Module::Runtime 'module_notional_filename';
 use List::MoreUtils 'any';
+use Sub::Exporter::ForMethods 'method_installer';
+use Data::Section 0.004 { installer => method_installer }, '-setup';
 use namespace::autoclean;
 
 sub filename { path('t', 'zzz-check-breaks.t') }
@@ -27,67 +29,7 @@ sub gather_files
 
     $self->add_file( Dist::Zilla::File::InMemory->new(
         name => $self->filename->stringify,
-        content => <<'TEST',
-use strict;
-use warnings;
-
-# this test was generated with {{ ref($plugin) . ' ' . ($plugin->VERSION || '<self>') }}
-
-use Test::More;
-
-SKIP: {
-{{
-    if ($module) {
-        require Module::Runtime;
-        my $filename = Module::Runtime::module_notional_filename($module);
-        <<"CHECK_CONFLICTS";
-    eval 'require $module; 1' and ${module}->check_conflicts;
-    if (\$INC{'$filename'}) {
-        diag \$@ if \$@;
-        pass 'conflicts checked via $module';
-    }
-    else {
-        skip 'no $module module found', 1;
-    }
-CHECK_CONFLICTS
-    }
-    else
-    {
-        "    skip 'no conflicts module found to check against', 1;\n";
-    }
-}}}
-
-{{
-    if (keys %$breaks)
-    {
-        use Data::Dumper;
-        my $dumper = Data::Dumper->new([ $breaks ], [ 'breaks' ]);
-        $dumper->Sortkeys(1);
-        $dumper->Indent(1);
-        $dumper->Useqq(1);
-        'my $dist_name = \'' . $dist->name . "';\n" .
-        'my ' . $dumper->Dump . <<'CHECK_BREAKS';
-
-use CPAN::Meta::Requirements;
-my $reqs = CPAN::Meta::Requirements->new;
-$reqs->add_string_requirement($_, $breaks->{$_}) foreach keys %$breaks;
-
-use CPAN::Meta::Check 0.007 'check_requirements';
-our $result = check_requirements($reqs, 'conflicts');
-
-if (my @breaks = sort grep { defined $result->{$_} } keys %$result)
-{
-    diag "Breakages found with $dist_name:";
-    diag "$result->{$_}" for @breaks;
-    diag "\n", 'You should now update these modules!';
-}
-CHECK_BREAKS
-    }
-    else { q{pass 'no x_breaks data to check';} }
-}}
-
-done_testing;
-TEST
+        content => ${$self->section_data('test-check-breaks')},
     ));
 }
 
@@ -254,3 +196,65 @@ at "Improving on 'conflicts'"
 =back
 
 =cut
+
+__DATA__
+___[ test-check-breaks ]___
+use strict;
+use warnings;
+
+# this test was generated with {{ ref($plugin) . ' ' . ($plugin->VERSION || '<self>') }}
+
+use Test::More;
+
+SKIP: {
+{{
+    if ($module) {
+        require Module::Runtime;
+        my $filename = Module::Runtime::module_notional_filename($module);
+        <<"CHECK_CONFLICTS";
+    eval 'require $module; 1' and ${module}->check_conflicts;
+    if (\$INC{'$filename'}) {
+        diag \$@ if \$@;
+        pass 'conflicts checked via $module';
+    }
+    else {
+        skip 'no $module module found', 1;
+    }
+CHECK_CONFLICTS
+    }
+    else
+    {
+        "    skip 'no conflicts module found to check against', 1;\n";
+    }
+}}}
+
+{{
+    if (keys %$breaks)
+    {
+        use Data::Dumper;
+        my $dumper = Data::Dumper->new([ $breaks ], [ 'breaks' ]);
+        $dumper->Sortkeys(1);
+        $dumper->Indent(1);
+        $dumper->Useqq(1);
+        'my $dist_name = \'' . $dist->name . "';\n" .
+        'my ' . $dumper->Dump . <<'CHECK_BREAKS';
+
+use CPAN::Meta::Requirements;
+my $reqs = CPAN::Meta::Requirements->new;
+$reqs->add_string_requirement($_, $breaks->{$_}) foreach keys %$breaks;
+
+use CPAN::Meta::Check 0.007 'check_requirements';
+our $result = check_requirements($reqs, 'conflicts');
+
+if (my @breaks = sort grep { defined $result->{$_} } keys %$result)
+{
+    diag "Breakages found with $dist_name:";
+    diag "$result->{$_}" for @breaks;
+    diag "\n", 'You should now update these modules!';
+}
+CHECK_BREAKS
+    }
+    else { q{pass 'no x_breaks data to check';} }
+}}
+
+done_testing;
