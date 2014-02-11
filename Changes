@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.003     2014-02-11 06:13:34Z
           - remove invalid assumption that [Breaks] is installed by inlining a
             stripped down version into the necessary test
 
