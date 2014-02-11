@@ -192,7 +192,7 @@ indicated by C<x_breaks> in your distribution metadata.
 (See the F<t/zzz-check-breaks.t> test in this distribution for an example.)
 
 C<x_breaks> entries are expected to be
-L<version ranges|CPAN::Meta::Spec#Version-Ranges>, with one
+L<version ranges|CPAN::Meta::Spec/Version Ranges>, with one
 addition, for backwards compatibility with
 L<[Conflicts]|Dist::Zilla::Plugin::Conflicts>: if a bare version number is
 specified, it is interpreted as C<< '<= $version' >> (to preserve the intent
