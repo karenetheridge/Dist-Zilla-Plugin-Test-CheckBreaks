@@ -135,7 +135,7 @@ sub munge_file
     foreach my $package (keys %$breaks_data)
     {
         my $version = $breaks_data->{$package};
-        $breaks_data->{$package} = '<= ' . $version if eval { version->parse($version); 1 };
+        $breaks_data->{$package} = '<= ' . $version if version::is_lax($version);
     }
 
     $file->content(
