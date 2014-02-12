@@ -18,11 +18,10 @@ my $tzil = Builder->from_config(
                 [ GatherDir => ],
                 [ 'Test::CheckBreaks' => ],
                 [ '=Breaks' => {
-                    'Dist::Zilla' => Dist::Zilla->VERSION,  # fails
-                    'ExtUtils::MakeMaker' => '20.0',        # fails
-                    'version' => '== ' . version->VERSION,   # fails
+                    'Dist::Zilla' => '>= ' . Dist::Zilla->VERSION,  # fails; stored as 'version'
+                    'ExtUtils::MakeMaker' => '<= 20.0',             # fails
+                    'version' => '== ' . version->VERSION,          # fails
                     'Test::More' => '!= ' . Test::More->VERSION,    # passes
-
                   }
                 ],
             ),
@@ -45,7 +44,7 @@ unlike($content, qr/$_/m, "test does not do anything with $_")
     for 'Foo::Conflicts';
 
 my @expected_break_specs = (
-    '"Dist::Zilla".*"<= ' . Dist::Zilla->VERSION . '"',
+    '"Dist::Zilla".*"' . Dist::Zilla->VERSION . '"',
     '"ExtUtils::MakeMaker".*"<= 20.0"',
     '"version".*"== ' . version->VERSION . '"',
     '"Test::More".*"!= ' . Test::More->VERSION . '"',

@@ -2,6 +2,7 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
           - fix failing test with old Test::More
+          - fix invalid munging of bare version numbers in metadata
 
 0.004     2014-02-11 06:28:29Z
           - keep usage of ::Conflicts module inside an eval to protect against

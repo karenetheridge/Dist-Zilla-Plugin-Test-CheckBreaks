@@ -75,13 +75,6 @@ sub munge_file
     $self->log('no conflicts module found to check against: adding no-op test')
         if not keys %$breaks_data and not $self->conflicts_module;
 
-    # munge breaks data for back-compat: interpret bare versions as '<= version'
-    foreach my $package (keys %$breaks_data)
-    {
-        my $version = $breaks_data->{$package};
-        $breaks_data->{$package} = '<= ' . $version if version::is_lax($version);
-    }
-
     $file->content(
         $self->fill_in_string(
             $file->content,
