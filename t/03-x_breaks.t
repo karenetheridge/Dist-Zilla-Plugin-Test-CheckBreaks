@@ -21,7 +21,8 @@ my $tzil = Builder->from_config(
                     'Dist::Zilla' => Dist::Zilla->VERSION,  # fails
                     'ExtUtils::MakeMaker' => '20.0',        # fails
                     'version' => '== ' . version->VERSION,   # fails
-                    'Test::More' => '1.0',  # passes
+                    'Test::More' => '!= ' . Test::More->VERSION,    # passes
+
                   }
                 ],
             ),
@@ -47,7 +48,7 @@ my @expected_break_specs = (
     '"Dist::Zilla".*"<= ' . Dist::Zilla->VERSION . '"',
     '"ExtUtils::MakeMaker".*"<= 20.0"',
     '"version".*"== ' . version->VERSION . '"',
-    '"Test::More".*"<= 1.0"',
+    '"Test::More".*"!= ' . Test::More->VERSION . '"',
 );
 
 like($content, qr/$_/m, 'test checks the right version range') foreach @expected_break_specs;
