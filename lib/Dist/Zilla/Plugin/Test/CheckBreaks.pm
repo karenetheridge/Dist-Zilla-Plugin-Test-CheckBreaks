@@ -208,13 +208,10 @@ SKIP: {
         my $filename = Module::Runtime::module_notional_filename($module);
         <<"CHECK_CONFLICTS";
     eval 'require $module; ${module}->check_conflicts';
-    if (\$INC{'$filename'}) {
-        diag \$@ if \$@;
-        pass 'conflicts checked via $module';
-    }
-    else {
-        skip 'no $module module found', 1;
-    }
+    skip('no $module module found', 1) if not \$INC{'$filename'};
+
+    diag \$@ if \$@;
+    pass 'conflicts checked via $module';
 CHECK_CONFLICTS
     }
     else
