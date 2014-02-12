@@ -228,8 +228,8 @@ CHECK_CONFLICTS
         $dumper->Sortkeys(1);
         $dumper->Indent(1);
         $dumper->Useqq(1);
-        'my $dist_name = \'' . $dist->name . "';\n" .
-        'my ' . $dumper->Dump . <<'CHECK_BREAKS';
+        my $dist_name = $dist->name;
+        'my ' . $dumper->Dump . <<'CHECK_BREAKS_1' .
 
 use CPAN::Meta::Requirements;
 my $reqs = CPAN::Meta::Requirements->new;
@@ -240,11 +240,13 @@ our $result = check_requirements($reqs, 'conflicts');
 
 if (my @breaks = sort grep { defined $result->{$_} } keys %$result)
 {
-    diag "Breakages found with $dist_name:";
+CHECK_BREAKS_1
+    "    diag 'Breakages found with $dist_name:';\n" .
+    <<'CHECK_BREAKS_2';
     diag "$result->{$_}" for @breaks;
     diag "\n", 'You should now update these modules!';
 }
-CHECK_BREAKS
+CHECK_BREAKS_2
     }
     else { q{pass 'no x_breaks data to check';} }
 }}
