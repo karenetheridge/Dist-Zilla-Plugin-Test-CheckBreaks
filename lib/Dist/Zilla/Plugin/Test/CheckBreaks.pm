@@ -42,8 +42,10 @@ has conflicts_module => (
         $self->log_debug('no conflicts_module provided; looking for one in the dist...');
         # TODO: use Dist::Zilla::Role::ModuleMetadata
         my $main_file = $self->zilla->main_module;
-        open my $fh, sprintf('<encoding(%s)', $main_file->encoding), \$main_file->encoded_content
-            or $self->log_fatal('cannot open handle to ' . $main_file->name . ' content: ' . $!);
+        open my $fh,
+            sprintf('<encoding(%s)', ($main_file->can('encoding') ? $main_file->encoding : 'Latin1')),
+            \$main_file->encoded_content
+                or $self->log_fatal('cannot open handle to ' . $main_file->name . ' content: ' . $!);
 
         my $mmd = Module::Metadata->new_from_handle($fh, $main_file->name);
         my $module = ($mmd->packages_inside)[0] . '::Conflicts';
