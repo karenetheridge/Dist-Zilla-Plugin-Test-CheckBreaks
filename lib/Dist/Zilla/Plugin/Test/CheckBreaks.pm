@@ -95,7 +95,8 @@ sub register_prereqs
 {
     my $self = shift;
 
-    return unless keys %{ $self->zilla->distmeta->{x_breaks} };
+    my $distmeta = $self->zilla->distmeta;
+    return unless exists $distmeta->{x_breaks} and keys %{ $distmeta->{x_breaks} };
 
     $self->zilla->register_prereqs(
         {
