@@ -18,14 +18,19 @@ my $tzil = Builder->from_config(
                 [ GatherDir => ],
                 [ 'Test::CheckBreaks' => ],
                 [ '=Breaks' => {
-                    'Dist::Zilla' => '>= ' . Dist::Zilla->VERSION,  # fails; stored as 'version'
-                    'ExtUtils::MakeMaker' => '<= 20.0',             # fails
-                    'version' => '== ' . version->VERSION,          # fails
-                    'Test::More' => '!= ' . Test::More->VERSION,    # passes
+                    'ClassA' => '>= 1.0',   # fails; stored as 'version'
+                    'ClassB' => '<= 20.0',  # fails
+                    'ClassC' => '== 1.0',   # fails
+                    'ClassD' => '!= 1.0',   # passes
                   }
                 ],
             ),
             path(qw(source lib Foo.pm)) => "package Foo;\n1;\n",
+            # @INC contains . by default, so these modules will be found by CPAN::Meta::Check.
+            path(qw(source ClassA.pm)) => "package ClassA;\n\$ClassA::VERSION = '1.0';\n1;",
+            path(qw(source ClassB.pm)) => "package ClassB;\n\$ClassB::VERSION = '1.0';\n1;",
+            path(qw(source ClassC.pm)) => "package ClassC;\n\$ClassC::VERSION = '1.0';\n1;",
+            path(qw(source ClassD.pm)) => "package ClassD;\n\$ClassD::VERSION = '1.0';\n1;",
         },
     },
 );
@@ -44,10 +49,10 @@ unlike($content, qr/$_/m, "test does not do anything with $_")
     for 'Foo::Conflicts';
 
 my @expected_break_specs = (
-    '"Dist::Zilla".*"' . Dist::Zilla->VERSION . '"',
-    '"ExtUtils::MakeMaker".*"<= 20.0"',
-    '"version".*"== ' . version->VERSION . '"',
-    '"Test::More".*"!= ' . Test::More->VERSION . '"',
+    '"ClassA".*"1.0"',
+    '"ClassB".*"<= 20.0"',
+    '"ClassC".*"== 1.0"',
+    '"ClassD".*"!= 1.0"',
 );
 
 like($content, qr/$_/m, 'test checks the right version range') foreach @expected_break_specs;
@@ -66,10 +71,10 @@ my $is_defined = code(sub { defined($_[0]) || (0, 'value not defined') });
 cmp_deeply(
     $breaks_result,
     {
-        'ExtUtils::MakeMaker' => $is_defined,
-        'Dist::Zilla' => $is_defined,
-        'version' => $is_defined,
-        'Test::More' => undef,
+        'ClassA' => $is_defined,
+        'ClassB' => $is_defined,
+        'ClassC' => $is_defined,
+        'ClassD' => undef,
     },
     'breakages checked, with the correct results achieved',
 );
