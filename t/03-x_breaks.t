@@ -62,7 +62,7 @@ subtest 'run the generated test' => sub
 # we define a global $result in the test, which we can now use to extract the values of the test
 my $breaks_result = eval '$main::result';
 
-my $is_defined = code(sub { defined $_[0] });
+my $is_defined = code(sub { defined($_[0]) || (0, 'value not defined') });
 cmp_deeply(
     $breaks_result,
     {
