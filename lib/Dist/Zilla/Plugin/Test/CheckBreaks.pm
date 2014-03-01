@@ -181,16 +181,14 @@ were born!
 
 =head1 SEE ALSO
 
-=over 4
+=begin :list
 
-=item * L<Dist::Zilla::Plugin::Breaks>
+* L<Dist::Zilla::Plugin::Breaks>
+* L<Dist::CheckConflicts>
+* L<The Annotated Lancaster Consensus|http://www.dagolden.com/index.php/2098/the-annotated-lancaster-consensus/> at "Improving on 'conflicts'"
+* L<Module::Install::CheckConflicts>
 
-=item * L<Dist::CheckConflicts>
-
-=item * L<The Annotated Lancaster Consensus|http://www.dagolden.com/index.php/2098/the-annotated-lancaster-consensus/>
-at "Improving on 'conflicts'"
-
-=back
+=end :list
 
 =cut
 
