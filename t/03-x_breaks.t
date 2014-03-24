@@ -5,7 +5,7 @@ use Test::More;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
 use Test::DZil;
 use Path::Tiny;
-use File::pushd;
+use File::pushd 'pushd';
 use Test::Deep;
 
 use lib 't/lib';
@@ -59,7 +59,7 @@ like($content, qr/$_/m, 'test checks the right version range') foreach @expected
 
 subtest 'run the generated test' => sub
 {
-    my $wd = File::pushd::pushd $build_dir;
+    my $wd = pushd $build_dir;
     do $file;
     warn $@ if $@;
 };

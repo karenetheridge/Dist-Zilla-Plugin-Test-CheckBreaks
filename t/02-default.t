@@ -2,7 +2,7 @@ use Test::More;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
 use Test::DZil;
 use Path::Tiny;
-use File::pushd;
+use File::pushd 'pushd';
 
 {
     my $tzil = Builder->from_config(
@@ -38,7 +38,7 @@ CONFLICTS
 
     subtest 'run the generated test' => sub
     {
-        my $wd = File::pushd::pushd $build_dir;
+        my $wd = pushd $build_dir;
         do $file;
         warn $@ if $@;
     };
@@ -75,7 +75,7 @@ CONFLICTS
 
     subtest 'run the generated test' => sub
     {
-        File::pushd::pushd $build_dir;
+        pushd $build_dir;
         do $file;
         warn $@ if $@;
     };

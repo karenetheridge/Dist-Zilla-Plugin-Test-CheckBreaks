@@ -5,7 +5,7 @@ use Test::More;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
 use Test::DZil;
 use Path::Tiny;
-use File::pushd;
+use File::pushd 'pushd';
 use Test::Deep;
 use Test::Deep::YAML 0.002;
 
@@ -54,7 +54,7 @@ cmp_deeply(
 
 subtest 'run the generated test' => sub
 {
-    my $wd = File::pushd::pushd $build_dir;
+    my $wd = pushd $build_dir;
     do $file;
     warn $@ if $@;
 };
