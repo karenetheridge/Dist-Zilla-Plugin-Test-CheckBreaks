@@ -238,12 +238,12 @@ $reqs->add_string_requirement($_, $breaks->{$_}) foreach keys %$breaks;
 use CPAN::Meta::Check 0.007 'check_requirements';
 our $result = check_requirements($reqs, 'conflicts');
 
-if (my @breaks = sort grep { defined $result->{$_} } keys %$result)
+if (my @breaks = grep { defined $result->{$_} } keys %$result)
 {
 CHECK_BREAKS_1
     "    diag 'Breakages found with $dist_name:';\n" .
     <<'CHECK_BREAKS_2';
-    diag "$result->{$_}" for @breaks;
+    diag "$result->{$_}" for sort @breaks;
     diag "\n", 'You should now update these modules!';
 }
 CHECK_BREAKS_2
