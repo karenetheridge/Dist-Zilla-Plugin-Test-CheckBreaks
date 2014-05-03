@@ -1,4 +1,6 @@
+/.ackrc
 /.build/
-!.gitignore
+!/.gitignore
+/.latest
 /Dist-Zilla-Plugin-Test-CheckBreaks-*/
 /Dist-Zilla-Plugin-Test-CheckBreaks-*.tar.gz
