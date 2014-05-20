@@ -39,6 +39,7 @@ unlike($content, qr/[^\S\n]\n/m, 'no trailing whitespace in generated test');
 like($content, qr/eval 'require $_; $_->check_conflicts'/m, "test checks $_")
     for 'Moose::Conflicts';
 
+# note - YAML.pm wants characters, not octets
 my $yaml = $tzil->slurp_file('build/META.yml');
 cmp_deeply(
     $yaml,
