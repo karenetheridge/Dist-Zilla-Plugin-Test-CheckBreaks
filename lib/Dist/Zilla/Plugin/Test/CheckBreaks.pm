@@ -14,7 +14,7 @@ with (
 use Module::Metadata;
 use Path::Tiny;
 use Module::Runtime 'module_notional_filename';
-use List::MoreUtils 'any';
+use List::Util 1.33 'any';
 use Sub::Exporter::ForMethods 'method_installer';
 use Data::Section 0.004 { installer => method_installer }, '-setup';
 use namespace::autoclean;
