@@ -119,7 +119,7 @@ In your F<dist.ini>:
     [Breaks]
     Foo = <= 1.1    ; Foo at 1.1 or lower will break when I am installed
 
-    [CheckBreaks]
+    [Test::CheckBreaks]
     conflicts_module = Moose::Conflicts
 
 =head1 DESCRIPTION
