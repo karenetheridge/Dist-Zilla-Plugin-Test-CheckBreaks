@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          - minor documentation fixes and metadata tweaks
 
 0.007     2014-02-23 00:39:22Z
           - avoid adding an empty x_breaks field to metadata
