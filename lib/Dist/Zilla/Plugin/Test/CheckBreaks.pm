@@ -12,7 +12,7 @@ with (
     'Dist::Zilla::Role::TextTemplate',
     'Dist::Zilla::Role::PrereqSource',
 );
-use Module::Metadata;
+use Module::Metadata 1.000005;
 use Path::Tiny;
 use Module::Runtime 'module_notional_filename';
 use List::Util 1.33 'any';

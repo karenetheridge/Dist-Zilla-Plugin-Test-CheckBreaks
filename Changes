@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          - define a specific version needed for Module::Metadata, for the
+            interfaces we use
 
 0.008     2014-06-27 16:35:50Z
           - minor documentation fixes and metadata tweaks
