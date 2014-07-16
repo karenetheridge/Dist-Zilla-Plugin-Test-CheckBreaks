@@ -74,7 +74,7 @@ sub munge_file
 
     my $breaks_data = $self->zilla->distmeta->{x_breaks};
 
-    $self->log('no conflicts module found to check against: adding no-op test')
+    $self->log('no x_breaks metadata and no conflicts module found to check against: adding no-op test')
         if not keys %$breaks_data and not $self->conflicts_module;
 
     $file->content(
