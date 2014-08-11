@@ -61,7 +61,8 @@ subtest 'run the generated test' => sub
 {
     my $wd = pushd $build_dir;
     do $file;
-    warn $@ if $@;
+    note 'ran tests successfully' if not $@;
+    fail($@) if $@;
 };
 
 # we define a global $result in the test, which we can now use to extract the values of the test

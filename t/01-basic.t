@@ -57,7 +57,8 @@ subtest 'run the generated test' => sub
 {
     my $wd = pushd $build_dir;
     do $file;
-    warn $@ if $@;
+    note 'ran tests successfully' if not $@;
+    fail($@) if $@;
 };
 
 diag 'saw log messages: ', explain $tzil->log_messages if not Test::Builder->new->is_passing;
