@@ -1,6 +1,7 @@
 use Test::More;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
 use Test::DZil;
+use Test::Deep;
 use Path::Tiny;
 use File::pushd 'pushd';
 
@@ -35,6 +36,21 @@ CONFLICTS
 
     like($content, qr/eval 'require $_; $_->check_conflicts'/m, "test checks $_")
         for 'Foo::Bar::Conflicts';
+
+    cmp_deeply(
+        $tzil->distmeta,
+        superhashof({
+            prereqs => {
+                test => {
+                    requires => {
+                        'Test::More' => '0.88',
+                        'Module::Runtime' => '0',
+                    },
+                },
+            },
+        }),
+        'prereqs are properly injected for the test phase',
+    ) or diag 'got distmeta: ', explain $tzil->distmeta;
 
     subtest 'run the generated test' => sub
     {
@@ -73,6 +89,20 @@ CONFLICTS
 
     unlike($content, qr/$_/m, "test does not do anything with $_")
         for 'Foo::Bar::Conflicts';
+
+    cmp_deeply(
+        $tzil->distmeta,
+        superhashof({
+            prereqs => {
+                test => {
+                    requires => {
+                        'Test::More' => '0.88',
+                    },
+                },
+            },
+        }),
+        'prereqs are properly injected for the test phase',
+    ) or diag 'got distmeta: ', explain $tzil->distmeta;
 
     subtest 'run the generated test' => sub
     {

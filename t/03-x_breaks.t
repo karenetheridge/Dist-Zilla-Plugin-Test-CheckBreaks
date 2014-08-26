@@ -57,6 +57,23 @@ my @expected_break_specs = (
 
 like($content, qr/$_/m, 'test checks the right version range') foreach @expected_break_specs;
 
+cmp_deeply(
+    $tzil->distmeta,
+    superhashof({
+        prereqs => {
+            test => {
+                requires => {
+                    'Test::More' => '0.88',
+                    'CPAN::Meta::Requirements' => '0',
+                    'CPAN::Meta::Check' => '0.007',
+                    'Data::Dumper' => '0',
+                },
+            },
+        },
+    }),
+    'correct test prereqs are injected',
+);
+
 subtest 'run the generated test' => sub
 {
     my $wd = pushd $build_dir;

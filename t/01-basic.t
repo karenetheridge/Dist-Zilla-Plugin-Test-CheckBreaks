@@ -46,6 +46,21 @@ cmp_deeply(
     'metadata does not get an autovivified x_breaks field',
 );
 
+cmp_deeply(
+    $tzil->distmeta,
+    superhashof({
+        prereqs => {
+            test => {
+                requires => {
+                    'Test::More' => '0.88',
+                    'Module::Runtime' => '0',
+                },
+            },
+        },
+    }),
+    'prereqs are properly injected for the test phase',
+) or diag 'got distmeta: ', explain $tzil->distmeta;
+
 subtest 'run the generated test' => sub
 {
     my $wd = pushd $build_dir;

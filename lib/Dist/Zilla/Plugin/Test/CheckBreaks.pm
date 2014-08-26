@@ -97,15 +97,20 @@ sub register_prereqs
     my $self = shift;
 
     my $distmeta = $self->zilla->distmeta;
-    return unless exists $distmeta->{x_breaks} and keys %{ $distmeta->{x_breaks} };
 
     $self->zilla->register_prereqs(
         {
             phase => 'test',
             type  => 'requires',
         },
-        'CPAN::Meta::Requirements' => 0,
-        'CPAN::Meta::Check' => '0.007',
+        'Test::More' => '0.88',
+        exists $distmeta->{x_breaks} && keys %{ $distmeta->{x_breaks} }
+            ? (
+                'CPAN::Meta::Requirements' => '0',
+                'CPAN::Meta::Check' => '0.007',
+                'Data::Dumper' => '0',
+            ) : (),
+        $self->conflicts_module ? ( 'Module::Runtime' => '0' ) : (),
     );
 }
 
@@ -197,7 +202,7 @@ use warnings;
 
 # this test was generated with {{ ref($plugin) . ' ' . ($plugin->VERSION || '<self>') }}
 
-use Test::More;
+use Test::More 0.88;
 
 SKIP: {
 {{
