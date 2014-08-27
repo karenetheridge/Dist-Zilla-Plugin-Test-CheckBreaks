@@ -71,7 +71,6 @@ sub munge_files
     my $self = shift;
 
     my $breaks_data = $self->zilla->distmeta->{x_breaks};
-
     $self->log('no x_breaks metadata and no conflicts module found to check against: adding no-op test')
         if not keys %$breaks_data and not $self->conflicts_module;
 
@@ -84,7 +83,7 @@ sub munge_files
             {
                 dist => \($self->zilla),
                 plugin => \$self,
-                module  => \($self->conflicts_module),
+                module => \($self->conflicts_module),
                 breaks => \$breaks_data,
             }
         )
