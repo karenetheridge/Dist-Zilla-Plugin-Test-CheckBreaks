@@ -22,6 +22,18 @@ use namespace::autoclean;
 
 sub filename { path('t', 'zzz-check-breaks.t') }
 
+around dump_config => sub
+{
+    my ($orig, $self) = @_;
+    my $config = $self->$orig;
+
+    $config->{+__PACKAGE__} = {
+        conflicts_module => $self->conflicts_module,
+    };
+
+    return $config;
+};
+
 sub gather_files
 {
     my $self = shift;

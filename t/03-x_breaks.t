@@ -16,6 +16,7 @@ my $tzil = Builder->from_config(
         add_files => {
             path(qw(source dist.ini)) => simple_ini(
                 [ GatherDir => ],
+                [ MetaConfig => ],
                 [ 'Test::CheckBreaks' => ],
                 [ '=Breaks' => {
                     'ClassA' => '>= 1.0',   # fails; stored as 'version'
@@ -76,8 +77,22 @@ cmp_deeply(
             'ClassC' => '== 1.0',
             'ClassD' => '!= 1.0',
         },
+        x_Dist_Zilla => superhashof({
+            plugins => supersetof(
+                {
+                    class => 'Dist::Zilla::Plugin::Test::CheckBreaks',
+                    config => {
+                        'Dist::Zilla::Plugin::Test::CheckBreaks' => {
+                            conflicts_module => undef,
+                        },
+                    },
+                    name => 'Test::CheckBreaks',
+                    version => ignore,
+                },
+            ),
+        }),
     }),
-    'correct test prereqs are injected',
+    'correct test prereqs are injected; correct dumped configs',
 );
 
 subtest 'run the generated test' => sub

@@ -14,6 +14,7 @@ my $tzil = Builder->from_config(
         add_files => {
             path(qw(source dist.ini)) => simple_ini(
                 [ GatherDir => ],
+                [ MetaConfig => ],
                 [ 'Test::CheckBreaks' => { conflicts_module => 'Moose::Conflicts' } ],
             ),
             path(qw(source lib Foo.pm)) => "package Foo;\n1;\n",
@@ -57,8 +58,22 @@ cmp_deeply(
                 },
             },
         },
+        x_Dist_Zilla => superhashof({
+            plugins => supersetof(
+                {
+                    class => 'Dist::Zilla::Plugin::Test::CheckBreaks',
+                    config => {
+                        'Dist::Zilla::Plugin::Test::CheckBreaks' => {
+                            conflicts_module => 'Moose::Conflicts',
+                        },
+                    },
+                    name => 'Test::CheckBreaks',
+                    version => ignore,
+                },
+            ),
+        }),
     }),
-    'prereqs are properly injected for the test phase',
+    'prereqs are properly injected for the test phase; correct dumped configs',
 ) or diag 'got distmeta: ', explain $tzil->distmeta;
 
 subtest 'run the generated test' => sub

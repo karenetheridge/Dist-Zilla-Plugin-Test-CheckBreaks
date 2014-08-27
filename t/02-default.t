@@ -12,6 +12,7 @@ use File::pushd 'pushd';
             add_files => {
                 path(qw(source dist.ini)) => simple_ini(
                     [ GatherDir => ],
+                    [ MetaConfig => ],
                     [ 'Test::CheckBreaks' => ],
                 ),
                 path(qw(source lib Foo Bar.pm)) => "package Foo::Bar;\n1;\n",
@@ -57,8 +58,22 @@ CONFLICTS
                     },
                 },
             },
+            x_Dist_Zilla => superhashof({
+                plugins => supersetof(
+                    {
+                        class => 'Dist::Zilla::Plugin::Test::CheckBreaks',
+                        config => {
+                            'Dist::Zilla::Plugin::Test::CheckBreaks' => {
+                                conflicts_module => 'Foo::Bar::Conflicts',
+                            },
+                        },
+                        name => 'Test::CheckBreaks',
+                        version => ignore,
+                    },
+                ),
+            }),
         }),
-        'prereqs are properly injected for the test phase',
+        'prereqs are properly injected for the test phase; correct dumped configs',
     ) or diag 'got distmeta: ', explain $tzil->distmeta;
 
     subtest 'run the generated test' => sub
@@ -79,6 +94,7 @@ CONFLICTS
             add_files => {
                 path(qw(source dist.ini)) => simple_ini(
                     [ GatherDir => ],
+                    [ MetaConfig => ],
                     [ 'Test::CheckBreaks' => ],
                 ),
                 path(qw(source lib Foo Bar.pm)) => "package Foo::Bar;\n1;\n",
@@ -118,8 +134,22 @@ CONFLICTS
                     },
                 },
             },
+            x_Dist_Zilla => superhashof({
+                plugins => supersetof(
+                    {
+                        class => 'Dist::Zilla::Plugin::Test::CheckBreaks',
+                        config => {
+                            'Dist::Zilla::Plugin::Test::CheckBreaks' => {
+                                conflicts_module => undef,
+                            },
+                        },
+                        name => 'Test::CheckBreaks',
+                        version => ignore,
+                    },
+                ),
+            }),
         }),
-        'prereqs are properly injected for the test phase',
+        'prereqs are properly injected for the test phase; correct dumped configs',
     ) or diag 'got distmeta: ', explain $tzil->distmeta;
 
     subtest 'run the generated test' => sub
