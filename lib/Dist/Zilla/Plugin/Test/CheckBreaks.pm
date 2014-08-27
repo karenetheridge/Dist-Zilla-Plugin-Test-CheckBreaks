@@ -15,7 +15,7 @@ with (
 use Module::Metadata 1.000005;
 use Path::Tiny;
 use Module::Runtime 'module_notional_filename';
-use List::Util 1.33 'any';
+use List::Util 1.33 qw(any first);
 use Sub::Exporter::ForMethods 'method_installer';
 use Data::Section 0.004 { installer => method_installer }, '-setup';
 use namespace::autoclean;
@@ -66,16 +66,17 @@ has conflicts_module => (
     },
 );
 
-sub munge_file
+sub munge_files
 {
-    my ($self, $file) = @_;
-
-    return unless $file->name eq $self->filename;
+    my $self = shift;
 
     my $breaks_data = $self->zilla->distmeta->{x_breaks};
 
     $self->log('no x_breaks metadata and no conflicts module found to check against: adding no-op test')
         if not keys %$breaks_data and not $self->conflicts_module;
+
+    my $filename = $self->filename;
+    my $file = first { $_->name eq $filename } @{ $self->zilla->files };
 
     $file->content(
         $self->fill_in_string(
@@ -158,7 +159,7 @@ There is no error if the module does not exist. This test does not require
 L<[Conflicts]|Dist::Zilla::Plugin::Conflicts> to be used in your distribution;
 this is only a feature added for backwards compatibility.
 
-=for Pod::Coverage filename gather_files munge_file register_prereqs
+=for Pod::Coverage filename gather_files munge_files register_prereqs
 
 =head1 BACKGROUND
 
