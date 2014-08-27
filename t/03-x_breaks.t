@@ -70,6 +70,12 @@ cmp_deeply(
                 },
             },
         },
+        x_breaks => {
+            'ClassA' => '1.0',
+            'ClassB' => '<= 20.0',
+            'ClassC' => '== 1.0',
+            'ClassD' => '!= 1.0',
+        },
     }),
     'correct test prereqs are injected',
 );

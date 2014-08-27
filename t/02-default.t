@@ -39,6 +39,15 @@ CONFLICTS
 
     cmp_deeply(
         $tzil->distmeta,
+        # TODO: replace with Test::Deep::notexists($key)
+        code(sub {
+            !exists $_[0]->{x_breaks} ? 1 : (0, 'x_breaks exists');
+        }),
+        'metadata does not get an autovivified x_breaks field',
+    );
+
+    cmp_deeply(
+        $tzil->distmeta,
         superhashof({
             prereqs => {
                 test => {
@@ -89,6 +98,15 @@ CONFLICTS
 
     unlike($content, qr/$_/m, "test does not do anything with $_")
         for 'Foo::Bar::Conflicts';
+
+    cmp_deeply(
+        $tzil->distmeta,
+        # TODO: replace with Test::Deep::notexists($key)
+        code(sub {
+            !exists $_[0]->{x_breaks} ? 1 : (0, 'x_breaks exists');
+        }),
+        'metadata does not get an autovivified x_breaks field',
+    );
 
     cmp_deeply(
         $tzil->distmeta,
