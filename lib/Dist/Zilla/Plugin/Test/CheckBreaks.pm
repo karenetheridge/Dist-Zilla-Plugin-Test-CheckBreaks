@@ -261,7 +261,6 @@ CHECK_BREAKS_1
 }
 CHECK_BREAKS_2
     }
-    else { q{pass 'no x_breaks data to check';} }
+    else { q{pass 'no x_breaks data to check';} . "\n" }
 }}
-
 done_testing;
