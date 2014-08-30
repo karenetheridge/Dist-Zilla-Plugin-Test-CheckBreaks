@@ -18,6 +18,7 @@ use Module::Runtime 'module_notional_filename';
 use List::Util 1.33 qw(any first);
 use Sub::Exporter::ForMethods 'method_installer';
 use Data::Section 0.004 { installer => method_installer }, '-setup';
+use Data::Dumper ();
 use namespace::autoclean;
 
 sub filename { path('t', 'zzz-check-breaks.t') }
@@ -120,9 +121,7 @@ sub register_prereqs
             ? (
                 'CPAN::Meta::Requirements' => '0',
                 'CPAN::Meta::Check' => '0.007',
-                'Data::Dumper' => '0',
             ) : (),
-        $self->conflicts_module ? ( 'Module::Runtime' => '0' ) : (),
     );
 }
 
@@ -238,7 +237,6 @@ CHECK_CONFLICTS
 {{
     if (keys %$breaks)
     {
-        use Data::Dumper;
         my $dumper = Data::Dumper->new([ $breaks ], [ 'breaks' ]);
         $dumper->Sortkeys(1);
         $dumper->Indent(1);
