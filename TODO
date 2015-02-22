@@ -1,0 +1,4 @@
+
+- make 'conflicts_module' an mvp_multivalue_arg -- will allow dists to
+  reference both Moose::Conflicts and Module::Runtime::Conflicts (things
+  that don't use Moose mandatorily, e.g. namespace::autoclean).
