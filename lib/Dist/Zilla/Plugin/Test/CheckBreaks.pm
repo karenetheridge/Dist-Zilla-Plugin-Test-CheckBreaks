@@ -123,6 +123,14 @@ sub register_prereqs
                 'CPAN::Meta::Check' => '0.007',
             ) : (),
     );
+
+    $self->zilla->register_prereqs(
+        {
+            phase => 'test',
+            type  => 'suggests',
+        },
+        $self->conflicts_module => '0',
+    ) if $self->conflicts_module;
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -55,6 +55,9 @@ cmp_deeply(
                 requires => {
                     'Test::More' => '0.88',
                 },
+                suggests => {
+                    'Moose::Conflicts' => '0',
+                },
             },
         },
         x_Dist_Zilla => superhashof({

@@ -55,6 +55,9 @@ CONFLICTS
                     requires => {
                         'Test::More' => '0.88',
                     },
+                    suggests => {
+                        'Foo::Bar::Conflicts' => '0',
+                    },
                 },
             },
             x_Dist_Zilla => superhashof({
