@@ -3,7 +3,7 @@ use warnings;
 package Dist::Zilla::Plugin::Test::CheckBreaks;
 # ABSTRACT: Generate a test that shows what modules you are breaking
 # KEYWORDS: distribution prerequisites upstream dependencies modules conflicts breaks breakages metadata
-# vim: set ts=8 sw=4 tw=78 et :
+# vim: set ts=8 sts=4 sw=4 tw=78 et :
 
 use Moose;
 with (
