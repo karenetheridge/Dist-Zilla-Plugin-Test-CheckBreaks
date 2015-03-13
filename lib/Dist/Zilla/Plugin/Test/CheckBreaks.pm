@@ -70,11 +70,11 @@ has conflicts_module => (
         my $conflicts_filename = module_notional_filename($module);
         if (any { $_->name eq path('lib', $conflicts_filename) } @{ $self->zilla->files })
         {
-            $self->log_debug($module . ' found');
+            $self->log_debug([ '%s found', $module ]);
             return $module;
         }
 
-        $self->log_debug('No ' . $module . ' found');
+        $self->log_debug([ 'No %s found', $module ]);
         return undef;
     },
 );
