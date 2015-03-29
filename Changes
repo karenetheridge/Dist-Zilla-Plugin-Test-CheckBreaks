@@ -1,4 +1,6 @@
-Revision history for Dist-Zilla-Plugin-Test-CheckBreaks
+Revision history for {{$dist->name}}
+
+{{$NEXT}}
 
 0.012     2015-03-29 23:46:18Z
           - now using Dist::Zilla::Role::ModuleMetadata to use a cached object

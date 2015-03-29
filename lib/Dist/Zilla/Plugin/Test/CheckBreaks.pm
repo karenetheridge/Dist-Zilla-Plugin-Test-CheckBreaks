@@ -5,7 +5,7 @@ package Dist::Zilla::Plugin::Test::CheckBreaks;
 # KEYWORDS: distribution prerequisites upstream dependencies modules conflicts breaks breakages metadata
 # vim: set ts=8 sts=4 sw=4 tw=78 et :
 
-our $VERSION = '0.012';
+our $VERSION = '0.013';
 
 use Moose;
 with (
