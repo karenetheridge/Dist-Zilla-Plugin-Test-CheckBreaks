@@ -61,11 +61,11 @@ cmp_deeply(
             plugins => supersetof(
                 {
                     class => 'Dist::Zilla::Plugin::Test::CheckBreaks',
-                    config => {
+                    config => superhashof({
                         'Dist::Zilla::Plugin::Test::CheckBreaks' => {
                             conflicts_module => 'Moose::Conflicts',
                         },
-                    },
+                    }),
                     name => 'Test::CheckBreaks',
                     version => ignore,
                 },

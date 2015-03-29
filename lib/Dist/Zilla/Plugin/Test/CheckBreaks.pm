@@ -11,8 +11,8 @@ with (
     'Dist::Zilla::Role::FileMunger',
     'Dist::Zilla::Role::TextTemplate',
     'Dist::Zilla::Role::PrereqSource',
+    'Dist::Zilla::Role::ModuleMetadata',
 );
-use Module::Metadata 1.000005;
 use Path::Tiny;
 use Module::Runtime 'module_notional_filename';
 use List::Util 1.33 qw(any first);
@@ -54,15 +54,8 @@ has conflicts_module => (
         my $self = shift;
 
         $self->log_debug('no conflicts_module provided; looking for one in the dist...');
-        # TODO: use Dist::Zilla::Role::ModuleMetadata
-        my $main_file = $self->zilla->main_module;
-        my $fh;
-        ($main_file->can('encoding')
-            ? open $fh, sprintf('<encoding(%s)', $main_file->encoding), \$main_file->encoded_content
-            : open $fh, '<', \$main_file->content)
-                or $self->log_fatal('cannot open handle to ' . $main_file->name . ' content: ' . $!);
 
-        my $mmd = Module::Metadata->new_from_handle($fh, $main_file->name);
+        my $mmd = $self->module_metadata_for_file($self->zilla->main_module);
         my $module = ($mmd->packages_inside)[0] . '::Conflicts';
 
         # check that the file exists in the dist (it should never be shipped

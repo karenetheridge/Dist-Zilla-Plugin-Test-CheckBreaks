@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          - now using Dist::Zilla::Role::ModuleMetadata to use a cached object
+            for efficiency
 
 0.011     2014-08-30 03:04:56Z
           - removed bunk test prereqs from version 0.010
