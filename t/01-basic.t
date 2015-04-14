@@ -67,7 +67,7 @@ cmp_deeply(
                         },
                     }),
                     name => 'Test::CheckBreaks',
-                    version => ignore,
+                    version => Dist::Zilla::Plugin::Test::CheckBreaks->VERSION,
                 },
             ),
         }),
