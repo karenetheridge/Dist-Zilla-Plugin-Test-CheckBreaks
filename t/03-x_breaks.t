@@ -44,7 +44,7 @@ my $file = path($build_dir, 't', 'zzz-check-breaks.t');
 ok(-e $file, 'test created');
 
 my $content = $file->slurp;
-unlike($content, qr/[^\S\n]\n/m, 'no trailing whitespace in generated test');
+unlike($content, qr/[^\S\n]\n/, 'no trailing whitespace in generated test');
 
 unlike($content, qr/$_/m, "test does not do anything with $_")
     for 'Foo::Conflicts';

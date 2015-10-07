@@ -30,7 +30,7 @@ my $file = path($build_dir, 't', 'zzz-check-breaks.t');
 ok(-e $file, 'test created');
 
 my $content = $file->slurp;
-unlike($content, qr/[^\S\n]\n/m, 'no trailing whitespace in generated test');
+unlike($content, qr/[^\S\n]\n/, 'no trailing whitespace in generated test');
 
 # it's important we require using an eval'd string rather than via a bareword,
 # so prereq scanners don't grab this module (::Conflicts modules are not
