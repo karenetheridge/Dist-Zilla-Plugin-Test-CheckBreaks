@@ -238,7 +238,8 @@ CHECK_CONFLICTS
         $dumper->Indent(1);
         $dumper->Useqq(1);
         my $dist_name = $dist->name;
-        'my ' . $dumper->Dump . <<'CHECK_BREAKS_1' .
+        '# this data duplicates x_breaks in META.json' . "\n"
+        . 'my ' . $dumper->Dump . <<'CHECK_BREAKS_1' .
 
 use CPAN::Meta::Requirements;
 my $reqs = CPAN::Meta::Requirements->new;
