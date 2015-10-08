@@ -75,6 +75,8 @@ has conflicts_module => (
     },
 );
 
+sub _cmc_prereq { '0.011' }
+
 sub munge_files
 {
     my $self = shift;
@@ -94,6 +96,7 @@ sub munge_files
                 plugin => \$self,
                 module => \($self->conflicts_module),
                 breaks => \$breaks_data,
+                cmc_prereq => \($self->_cmc_prereq),
             }
         )
     );
@@ -116,7 +119,7 @@ sub register_prereqs
         exists $distmeta->{x_breaks} && keys %{ $distmeta->{x_breaks} }
             ? (
                 'CPAN::Meta::Requirements' => '0',
-                'CPAN::Meta::Check' => '0.007',
+                'CPAN::Meta::Check' => $self->_cmc_prereq,
             ) : (),
     );
 }
@@ -239,20 +242,22 @@ CHECK_CONFLICTS
         $dumper->Useqq(1);
         my $dist_name = $dist->name;
         '# this data duplicates x_breaks in META.json' . "\n"
-        . 'my ' . $dumper->Dump . <<'CHECK_BREAKS_1' .
+        . 'my ' . $dumper->Dump . <<'CHECK_BREAKS_1a'
 
 use CPAN::Meta::Requirements;
 my $reqs = CPAN::Meta::Requirements->new;
 $reqs->add_string_requirement($_, $breaks->{$_}) foreach keys %$breaks;
 
-use CPAN::Meta::Check 0.007 'check_requirements';
+CHECK_BREAKS_1a
+    . "use CPAN::Meta::Check $cmc_prereq 'check_requirements';\n"
+    . <<'CHECK_BREAKS_1b'
 our $result = check_requirements($reqs, 'conflicts');
 
 if (my @breaks = grep { defined $result->{$_} } keys %$result)
 {
-CHECK_BREAKS_1
-    "    diag 'Breakages found with $dist_name:';\n" .
-    <<'CHECK_BREAKS_2';
+CHECK_BREAKS_1b
+    . "    diag 'Breakages found with $dist_name:';\n"
+    . <<'CHECK_BREAKS_2';
     diag "$result->{$_}" for sort @breaks;
     diag "\n", 'You should now update these modules!';
 }

@@ -66,7 +66,7 @@ cmp_deeply(
                 requires => {
                     'Test::More' => '0.88',
                     'CPAN::Meta::Requirements' => '0',
-                    'CPAN::Meta::Check' => '0.007',
+                    'CPAN::Meta::Check' => Dist::Zilla::Plugin::Test::CheckBreaks->_cmc_prereq,
                 },
             },
         },

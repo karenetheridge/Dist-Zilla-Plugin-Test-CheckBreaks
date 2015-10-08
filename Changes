@@ -1,6 +1,8 @@
 Revision history for Dist-Zilla-Plugin-Test-CheckBreaks
 
 {{$NEXT}}
+          - bump up the prerequisite for CPAN::Meta::Check, to get fixes for
+            its prereq specifications
 
 0.012     2015-03-29 23:46:18Z
           - now using Dist::Zilla::Role::ModuleMetadata to use a cached object
