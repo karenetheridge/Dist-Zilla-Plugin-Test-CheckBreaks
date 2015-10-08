@@ -32,6 +32,7 @@ around dump_config => sub
 
     $config->{+__PACKAGE__} = {
         conflicts_module => $self->conflicts_module,
+        blessed($self) ne __PACKAGE__ ? ( version => $VERSION ) : (),
     };
 
     return $config;
