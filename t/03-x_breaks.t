@@ -17,7 +17,7 @@ my $tzil = Builder->from_config(
             path(qw(source dist.ini)) => simple_ini(
                 [ GatherDir => ],
                 [ MetaConfig => ],
-                [ 'Test::CheckBreaks' => ],
+                [ 'Test::CheckBreaks' => { no_forced_deps => 0 } ],
                 [ '=Breaks' => {
                     'ClassA' => '>= 1.0',   # fails; stored as 'version'
                     'ClassB' => '<= 20.0',  # fails
@@ -86,6 +86,7 @@ cmp_deeply(
                     config => superhashof({
                         'Dist::Zilla::Plugin::Test::CheckBreaks' => {
                             conflicts_module => undef,
+                            no_forced_deps => 0,
                         },
                     }),
                     name => 'Test::CheckBreaks',

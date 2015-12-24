@@ -64,6 +64,7 @@ cmp_deeply(
                     config => superhashof({
                         'Dist::Zilla::Plugin::Test::CheckBreaks' => {
                             conflicts_module => 'Moose::Conflicts',
+                            no_forced_deps => 0,
                         },
                     }),
                     name => 'Test::CheckBreaks',

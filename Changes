@@ -1,6 +1,8 @@
 Revision history for Dist-Zilla-Plugin-Test-CheckBreaks
 
 {{$NEXT}}
+          - new configuration option "no_forced_deps", suitable for
+            distributions with restricted prerequisites
 
 0.013     2015-10-08 00:21:04Z
           - bump up the prerequisite for CPAN::Meta::Check, to get fixes for

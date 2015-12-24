@@ -23,6 +23,11 @@ use Data::Section 0.004 { installer => method_installer }, '-setup';
 use Data::Dumper ();
 use namespace::autoclean;
 
+has no_forced_deps => (
+    is => 'ro', isa => 'Bool',
+    default => 0,
+);
+
 sub filename { path('t', 'zzz-check-breaks.t') }
 
 around dump_config => sub
@@ -32,6 +37,7 @@ around dump_config => sub
 
     $config->{+__PACKAGE__} = {
         conflicts_module => $self->conflicts_module,
+        no_forced_deps => ($self->no_forced_deps ? 1 : 0),
         blessed($self) ne __PACKAGE__ ? ( version => $VERSION ) : (),
     };
 
@@ -95,6 +101,7 @@ sub munge_files
                 dist => \($self->zilla),
                 plugin => \$self,
                 module => \($self->conflicts_module),
+                no_forced_deps => \($self->no_forced_deps),
                 breaks => \$breaks_data,
                 cmc_prereq => \($self->_cmc_prereq),
             }
@@ -116,11 +123,18 @@ sub register_prereqs
             type  => 'requires',
         },
         'Test::More' => '0.88',
-        exists $distmeta->{x_breaks} && keys %{ $distmeta->{x_breaks} }
-            ? (
-                'CPAN::Meta::Requirements' => '0',
-                'CPAN::Meta::Check' => $self->_cmc_prereq,
-            ) : (),
+    );
+
+    return if not exists $distmeta->{x_breaks}
+        or not keys %{ $distmeta->{x_breaks} };
+
+    $self->zilla->register_prereqs(
+        {
+            phase => 'test',
+            type  => $self->no_forced_deps ? 'suggests' : 'requires',
+        },
+        'CPAN::Meta::Requirements' => '0',
+        'CPAN::Meta::Check' => $self->_cmc_prereq,
     );
 }
 
@@ -172,6 +186,15 @@ interoperability conflicts catalogued in that module.
 There is no error if the module does not exist. This test does not require
 L<[Conflicts]|Dist::Zilla::Plugin::Conflicts> to be used in your distribution;
 this is only a feature added for backwards compatibility.
+
+=head2 C<no_forced_deps>
+
+Suitable for distributions that do not wish to add a C<test requires>
+prerequisite on L<CPAN::Meta::Requirements> and L<CPAN::Meta::Check> --
+instead, the dependencies will be added as C<test suggests>, and the generated
+test will gracefully skip checks if these modules are not available.
+
+Available since version 0.014.
 
 =for Pod::Coverage filename gather_files munge_files register_prereqs
 
@@ -241,27 +264,34 @@ CHECK_CONFLICTS
         $dumper->Indent(1);
         $dumper->Useqq(1);
         my $dist_name = $dist->name;
-        '# this data duplicates x_breaks in META.json' . "\n"
-        . 'my ' . $dumper->Dump . <<'CHECK_BREAKS_1a'
+        ($no_forced_deps ? 'SKIP: {' . "\n" : '')
+        . '# this data duplicates x_breaks in META.json' . "\n"
+        . 'my ' . $dumper->Dump
 
-use CPAN::Meta::Requirements;
+        . "\n" . join("\n", $no_forced_deps
+            ?
+                (map { "skip 'This information-only test requires $_', 1\n    if not eval 'require $_';" }
+                    'CPAN::Meta::Requirements', 'CPAN::Meta::Check')
+            :
+                ('use CPAN::Meta::Requirements;', "use CPAN::Meta::Check $cmc_prereq;"))
+        . "\n\n"
+
+    . <<'CHECK_BREAKS_1b'
 my $reqs = CPAN::Meta::Requirements->new;
 $reqs->add_string_requirement($_, $breaks->{$_}) foreach keys %$breaks;
 
-CHECK_BREAKS_1a
-    . "use CPAN::Meta::Check $cmc_prereq 'check_requirements';\n"
-    . <<'CHECK_BREAKS_1b'
-our $result = check_requirements($reqs, 'conflicts');
+our $result = CPAN::Meta::Check::check_requirements($reqs, 'conflicts');
 
 if (my @breaks = grep { defined $result->{$_} } keys %$result)
 {
 CHECK_BREAKS_1b
     . "    diag 'Breakages found with $dist_name:';\n"
-    . <<'CHECK_BREAKS_2';
+    . <<'CHECK_BREAKS_2'
     diag "$result->{$_}" for sort @breaks;
     diag "\n", 'You should now update these modules!';
 }
 CHECK_BREAKS_2
+        . ($no_forced_deps ? '}' . "\n" : '')
     }
     else { q{pass 'no x_breaks data to check';} . "\n" }
 }}
