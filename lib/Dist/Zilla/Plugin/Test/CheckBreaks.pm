@@ -87,7 +87,7 @@ sub munge_files
 {
     my $self = shift;
 
-    my $breaks_data = $self->zilla->distmeta->{x_breaks};
+    my $breaks_data = $self->_x_breaks_data;
     $self->log_debug('no x_breaks metadata and no conflicts module found to check against: adding no-op test')
         if not keys %$breaks_data and not $self->conflicts_module;
 
@@ -115,8 +115,6 @@ sub register_prereqs
 {
     my $self = shift;
 
-    my $distmeta = $self->zilla->distmeta;
-
     $self->zilla->register_prereqs(
         {
             phase => 'test',
@@ -125,8 +123,7 @@ sub register_prereqs
         'Test::More' => '0.88',
     );
 
-    return if not exists $distmeta->{x_breaks}
-        or not keys %{ $distmeta->{x_breaks} };
+    return if not keys %{ $self->_x_breaks_data };
 
     $self->zilla->register_prereqs(
         {
@@ -137,6 +134,17 @@ sub register_prereqs
         'CPAN::Meta::Check' => $self->_cmc_prereq,
     );
 }
+
+has _x_breaks_data => (
+    is => 'ro', isa => 'HashRef[Str]',
+    init_arg => undef,
+    lazy => 1,
+    default => sub {
+        my $self = shift;
+        my $breaks_data = $self->zilla->distmeta->{x_breaks};
+        defined $breaks_data ? $breaks_data : {};
+    },
+);
 
 __PACKAGE__->meta->make_immutable;
 
