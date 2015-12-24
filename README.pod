@@ -8,7 +8,7 @@ Dist::Zilla::Plugin::Test::CheckBreaks - Generate a test that shows what modules
 
 =head1 VERSION
 
-version 0.013
+version 0.014
 
 =head1 SYNOPSIS
 
@@ -54,6 +54,15 @@ interoperability conflicts catalogued in that module.
 There is no error if the module does not exist. This test does not require
 L<[Conflicts]|Dist::Zilla::Plugin::Conflicts> to be used in your distribution;
 this is only a feature added for backwards compatibility.
+
+=head2 C<no_forced_deps>
+
+Suitable for distributions that do not wish to add a C<test requires>
+prerequisite on L<CPAN::Meta::Requirements> and L<CPAN::Meta::Check> --
+instead, the dependencies will be added as C<test suggests>, and the generated
+test will gracefully skip checks if these modules are not available.
+
+Available since version 0.014.
 
 =for Pod::Coverage filename gather_files munge_files register_prereqs
 
@@ -108,7 +117,7 @@ There is also a mailing list available for users of this distribution, at
 L<http://dzil.org/#mailing-list>.
 
 There is also an irc channel available for users of this distribution, at
-irc://irc.perl.org/#distzilla.
+L<irc://irc.perl.org/#distzilla>.
 
 I am also usually active on irc, as 'ether' at C<irc.perl.org>.
 
