@@ -94,19 +94,21 @@ sub munge_files
     my $filename = $self->filename;
     my $file = first { $_->name eq $filename } @{ $self->zilla->files };
 
-    $file->content(
-        $self->fill_in_string(
-            $file->content,
-            {
-                dist => \($self->zilla),
-                plugin => \$self,
-                module => \($self->conflicts_module),
-                no_forced_deps => \($self->no_forced_deps),
-                breaks => \$breaks_data,
-                cmc_prereq => \($self->_cmc_prereq),
-            }
-        )
+    my $content = $self->fill_in_string(
+        $file->content,
+        {
+            dist => \($self->zilla),
+            plugin => \$self,
+            module => \($self->conflicts_module),
+            no_forced_deps => \($self->no_forced_deps),
+            breaks => \$breaks_data,
+            cmc_prereq => \($self->_cmc_prereq),
+            test_count => \($self->_test_count),
+        }
     );
+
+    $content =~ s/\n\n\z/\n/;
+    $file->content($content);
 
     return;
 }
@@ -120,7 +122,7 @@ sub register_prereqs
             phase => 'test',
             type  => 'requires',
         },
-        'Test::More' => '0.88',
+        'Test::More' => '0',
     );
 
     return if not keys %{ $self->_x_breaks_data };
@@ -145,6 +147,14 @@ has _x_breaks_data => (
         defined $breaks_data ? $breaks_data : {};
     },
 );
+
+sub _test_count {
+    my $self = shift;
+
+    my $test_count = 1; # 1 for conflicts module, always
+    ++$test_count if not keys %{ $self->_x_breaks_data };
+    return $test_count;
+}
 
 __PACKAGE__->meta->make_immutable;
 
@@ -243,7 +253,7 @@ use warnings;
 
 # this test was generated with {{ ref $plugin }} {{ $plugin->VERSION }}
 
-use Test::More 0.88;
+use Test::More tests => {{ $test_count }};
 
 SKIP: {
 {{
@@ -278,7 +288,7 @@ CHECK_CONFLICTS
 
         . "\n" . join("\n", $no_forced_deps
             ?
-                (map { "skip 'This information-only test requires $_', 1\n    if not eval 'require $_';" }
+                (map { "skip 'This information-only test requires $_', 0\n    if not eval 'require $_';" }
                     'CPAN::Meta::Requirements', 'CPAN::Meta::Check')
             :
                 ('use CPAN::Meta::Requirements;', "use CPAN::Meta::Check $cmc_prereq;"))
@@ -303,4 +313,3 @@ CHECK_BREAKS_2
     }
     else { q{pass 'no x_breaks data to check';} . "\n" }
 }}
-done_testing;

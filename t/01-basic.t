@@ -53,7 +53,7 @@ cmp_deeply(
         prereqs => {
             test => {
                 requires => {
-                    'Test::More' => '0.88',
+                    'Test::More' => '0',
                 },
             },
         },

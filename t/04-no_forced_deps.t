@@ -8,7 +8,7 @@ my $code = path('t', '03-x_breaks.t')->slurp_utf8;
 
 $code =~ s/(no_forced_deps =>) 0/$1 1/g;
 
-$code =~ s/\^use \$_/skip 'This information-only test requires \$_', 1\\n    if not eval 'require \$_';/m;
+$code =~ s/\^use \$_/skip 'This information-only test requires \$_', 0\\n    if not eval 'require \$_';/m;
 $code =~ s/"test uses \$_"/"x_breaks checks skipped if \$_ not installed"/;
 
 my @prereqs = $code =~ m/^(\s+'CPAN::Meta::.+,\n)/mg;

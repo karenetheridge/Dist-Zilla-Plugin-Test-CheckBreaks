@@ -56,7 +56,7 @@ CONFLICTS
             prereqs => {
                 test => {
                     requires => {
-                        'Test::More' => '0.88',
+                        'Test::More' => '0',
                     },
                 },
             },
@@ -133,7 +133,7 @@ CONFLICTS
             prereqs => {
                 test => {
                     requires => {
-                        'Test::More' => '0.88',
+                        'Test::More' => '0',
                     },
                 },
             },
