@@ -58,6 +58,9 @@ my @expected_break_specs = (
 
 like($content, qr/$_/m, 'test checks the right version range') foreach @expected_break_specs;
 
+like($content, qr/^use $_/m, "test uses $_")
+    foreach 'CPAN::Meta::Requirements', 'CPAN::Meta::Check';
+
 cmp_deeply(
     $tzil->distmeta,
     superhashof({
