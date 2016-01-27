@@ -212,7 +212,7 @@ prerequisite on L<CPAN::Meta::Requirements> and L<CPAN::Meta::Check> --
 instead, the dependencies will be added as C<test suggests>, and the generated
 test will gracefully skip checks if these modules are not available.
 
-Available since version 0.014.
+Available since version 0.015.
 
 =for Pod::Coverage filename gather_files munge_files register_prereqs
 
@@ -288,8 +288,8 @@ CHECK_CONFLICTS
 
         . "\n" . join("\n", $no_forced_deps
             ?
-                (map { "skip 'This information-only test requires $_', 0\n    if not eval 'require $_';" }
-                    'CPAN::Meta::Requirements', 'CPAN::Meta::Check')
+                ("skip 'This information-only test requires CPAN::Meta::Requirements', 0\n    if not eval 'require CPAN::Meta::Requirements';",
+                 "skip 'This information-only test requires CPAN::Meta::Check $cmc_prereq', 0\n    if not eval 'require CPAN::Meta::Check; CPAN::Meta::Check->VERSION($cmc_prereq)';")
             :
                 ('use CPAN::Meta::Requirements;', "use CPAN::Meta::Check $cmc_prereq;"))
         . "\n\n"
