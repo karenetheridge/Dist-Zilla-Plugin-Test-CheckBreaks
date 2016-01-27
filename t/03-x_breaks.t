@@ -102,7 +102,16 @@ cmp_deeply(
 subtest 'run the generated test' => sub
 {
     my $wd = pushd $build_dir;
+
+    # make diag act like note
+    my $tb = Test::Builder->new;
+    my $saved_stderr = $tb->failure_output;
+    $tb->failure_output($tb->output);
+
     do $file;
+
+    $tb->failure_output($saved_stderr);
+
     note 'ran tests successfully' if not $@;
     fail($@) if $@;
 };

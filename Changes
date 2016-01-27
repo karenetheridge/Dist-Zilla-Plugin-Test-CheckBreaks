@@ -3,6 +3,8 @@ Revision history for Dist-Zilla-Plugin-Test-CheckBreaks
 {{$NEXT}}
           - fix missing check for required version of CPAN::Meta::Check when
             using "no_forced_deps" option
+          - tests are now quieter to avoid causing confusion, by suppressing
+            the output of faked breakage tests
 
 0.014     2015-12-24 22:32:26Z
           - new configuration option "no_forced_deps", suitable for
