@@ -1,5 +1,7 @@
 Revision history for Dist-Zilla-Plugin-Test-CheckBreaks
 
+{{$NEXT}}
+
 0.015     2016-01-27 02:44:24Z
           - fix missing check for required version of CPAN::Meta::Check when
             using "no_forced_deps" option
