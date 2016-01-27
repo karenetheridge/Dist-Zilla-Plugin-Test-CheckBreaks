@@ -8,7 +8,7 @@ Dist::Zilla::Plugin::Test::CheckBreaks - Generate a test that shows what modules
 
 =head1 VERSION
 
-version 0.014
+version 0.015
 
 =head1 SYNOPSIS
 
@@ -62,7 +62,7 @@ prerequisite on L<CPAN::Meta::Requirements> and L<CPAN::Meta::Check> --
 instead, the dependencies will be added as C<test suggests>, and the generated
 test will gracefully skip checks if these modules are not available.
 
-Available since version 0.014.
+Available since version 0.015.
 
 =for Pod::Coverage filename gather_files munge_files register_prereqs
 
