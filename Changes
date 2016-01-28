@@ -1,6 +1,6 @@
 Revision history for Dist-Zilla-Plugin-Test-CheckBreaks
 
-{{$NEXT}}
+0.016     2016-01-28 03:25:40Z
           - use TODO around tests that fail on perl 5.8.x due to the buggy
             handling of qr/...$/m
 
