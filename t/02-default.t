@@ -115,7 +115,7 @@ CONFLICTS
     my $content = $file->slurp;
     unlike($content, qr/[^\S\n]\n/m, 'no trailing whitespace in generated test');
 
-    unlike($content, qr/$_/m, "test does not do anything with $_")
+    unlike($content, qr/$_/, "test does not do anything with $_")
         for 'Foo::Bar::Conflicts';
 
     cmp_deeply(

@@ -46,7 +46,7 @@ ok(-e $file, 'test created');
 my $content = $file->slurp;
 unlike($content, qr/[^\S\n]\n/, 'no trailing whitespace in generated test');
 
-unlike($content, qr/$_/m, "test does not do anything with $_")
+unlike($content, qr/$_/, "test does not do anything with $_")
     for 'Foo::Conflicts';
 
 my @expected_break_specs = (
@@ -56,7 +56,7 @@ my @expected_break_specs = (
     '"ClassD".*"!= 1.0"',
 );
 
-like($content, qr/$_/m, 'test checks the right version range') foreach @expected_break_specs;
+like($content, qr/$_/, 'test checks the right version range') foreach @expected_break_specs;
 
 like($content, qr/^use CPAN::Meta::Requirements;$/m, 'test uses CPAN::Meta::Requirements');
 my $cmc_prereq = Dist::Zilla::Plugin::Test::CheckBreaks->_cmc_prereq;
