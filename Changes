@@ -1,6 +1,8 @@
 Revision history for Dist-Zilla-Plugin-Test-CheckBreaks
 
 {{$NEXT}}
+          - use TODO around tests that fail on perl 5.8.x due to the buggy
+            handling of qr/...$/m
 
 0.015     2016-01-27 02:44:24Z
           - fix missing check for required version of CPAN::Meta::Check when

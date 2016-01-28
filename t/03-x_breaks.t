@@ -58,9 +58,9 @@ my @expected_break_specs = (
 
 like($content, qr/$_/, 'test checks the right version range') foreach @expected_break_specs;
 
-like($content, qr/^use CPAN::Meta::Requirements;$/m, 'test uses CPAN::Meta::Requirements');
+like($content, qr/^use CPAN::Meta::Requirements;/m, 'test uses CPAN::Meta::Requirements');
 my $cmc_prereq = Dist::Zilla::Plugin::Test::CheckBreaks->_cmc_prereq;
-like($content, qr/^use CPAN::Meta::Check $cmc_prereq;$/m, "test uses CPAN::Meta::Check $cmc_prereq");
+like($content, qr/^use CPAN::Meta::Check $cmc_prereq;/m, "test uses CPAN::Meta::Check $cmc_prereq");
 
 cmp_deeply(
     $tzil->distmeta,
