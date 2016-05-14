@@ -84,6 +84,7 @@ subtest 'run the generated test' => sub
     fail($@) if $@;
 };
 
-diag 'saw log messages: ', explain $tzil->log_messages if not Test::Builder->new->is_passing;
+diag 'saw log messages: ', explain $tzil->log_messages
+    if not Test::Builder->new->is_passing;
 
 done_testing;

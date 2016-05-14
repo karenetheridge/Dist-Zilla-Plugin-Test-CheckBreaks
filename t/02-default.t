@@ -87,7 +87,8 @@ CONFLICTS
         fail($@) if $@;
     };
 
-    diag 'saw log messages: ', explain $tzil->log_messages if not Test::Builder->new->is_passing;
+    diag 'saw log messages: ', explain $tzil->log_messages
+        if not Test::Builder->new->is_passing;
 }
 
 {
@@ -163,7 +164,8 @@ CONFLICTS
         warn $@ if $@;
     };
 
-    diag 'saw log messages: ', explain $tzil->log_messages if not Test::Builder->new->is_passing;
+    diag 'saw log messages: ', explain $tzil->log_messages
+        if not Test::Builder->new->is_passing;
 }
 
 done_testing;

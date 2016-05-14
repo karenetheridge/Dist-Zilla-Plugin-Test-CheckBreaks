@@ -131,6 +131,7 @@ cmp_deeply(
     'breakages checked, with the correct results achieved',
 );
 
-diag 'saw log messages: ', explain $tzil->log_messages if not Test::Builder->new->is_passing;
+diag 'saw log messages: ', explain $tzil->log_messages
+    if not Test::Builder->new->is_passing;
 
 done_testing;
