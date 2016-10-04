@@ -1,9 +1,9 @@
 use strict;
 use warnings;
 package Dist::Zilla::Plugin::Test::CheckBreaks;
+# vim: set ts=8 sts=4 sw=4 tw=115 et :
 # ABSTRACT: Generate a test that shows what modules you are breaking
 # KEYWORDS: distribution prerequisites upstream dependencies modules conflicts breaks breakages metadata
-# vim: set ts=8 sts=4 sw=4 tw=115 et :
 
 our $VERSION = '0.017';
 
