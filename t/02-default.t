@@ -66,7 +66,7 @@ CONFLICTS
                         class => 'Dist::Zilla::Plugin::Test::CheckBreaks',
                         config => superhashof({
                             'Dist::Zilla::Plugin::Test::CheckBreaks' => {
-                                conflicts_module => 'Foo::Bar::Conflicts',
+                                conflicts_module => [ 'Foo::Bar::Conflicts' ],
                                 no_forced_deps => 0,
                             },
                         }),
@@ -144,7 +144,7 @@ CONFLICTS
                         class => 'Dist::Zilla::Plugin::Test::CheckBreaks',
                         config => superhashof({
                             'Dist::Zilla::Plugin::Test::CheckBreaks' => {
-                                conflicts_module => undef,
+                                conflicts_module => [],
                                 no_forced_deps => 0,
                             },
                         }),

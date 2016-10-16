@@ -36,7 +36,7 @@ around dump_config => sub
     my $config = $self->$orig;
 
     $config->{+__PACKAGE__} = {
-        conflicts_module => $self->conflicts_module,
+        conflicts_module => [ sort $self->conflicts_module ],
         no_forced_deps => ($self->no_forced_deps ? 1 : 0),
         blessed($self) ne __PACKAGE__ ? ( version => $VERSION ) : (),
     };
@@ -56,8 +56,12 @@ sub gather_files
     ));
 }
 
+sub mvp_multivalue_args { 'conflicts_module' }
+
 has conflicts_module => (
-    is => 'ro', isa => 'Str|Undef',
+    isa => 'ArrayRef[Str]',
+    traits => ['Array'],
+    handles => { conflicts_module => 'elements' },
     lazy => 1,
     default => sub {
         my $self = shift;
@@ -73,11 +77,11 @@ has conflicts_module => (
         if (any { $_->name eq path('lib', $conflicts_filename) } @{ $self->zilla->files })
         {
             $self->log_debug([ '%s found', $module ]);
-            return $module;
+            return [ $module ];
         }
 
         $self->log_debug([ 'No %s found', $module ]);
-        return undef;
+        return [];
     },
 );
 
@@ -86,6 +90,12 @@ sub _cmc_prereq { '0.011' }
 sub munge_files
 {
     my $self = shift;
+
+    # module => filename
+    my $modules = { map {
+        require Module::Runtime;
+        $_ => Module::Runtime::module_notional_filename($_)
+    } $self->conflicts_module };
 
     my $breaks_data = $self->_x_breaks_data;
     $self->log_debug('no x_breaks metadata and no conflicts module found to check against: adding no-op test')
@@ -99,7 +109,7 @@ sub munge_files
         {
             dist => \($self->zilla),
             plugin => \$self,
-            module => \($self->conflicts_module),
+            modules => \$modules,
             no_forced_deps => \($self->no_forced_deps),
             breaks => \$breaks_data,
             cmc_prereq => \($self->_cmc_prereq),
@@ -151,7 +161,10 @@ has _x_breaks_data => (
 sub _test_count {
     my $self = shift;
 
-    my $test_count = 1; # 1 for conflicts module, always
+    # 1 for each conflicts module, or 1 for none
+    my $test_count = $self->conflicts_module;
+    ++$test_count if not $test_count;
+
     ++$test_count if not keys %{ $self->_x_breaks_data };
     return $test_count;
 }
@@ -205,6 +218,8 @@ There is no error if the module does not exist. This test does not require
 L<[Conflicts]|Dist::Zilla::Plugin::Conflicts> to be used in your distribution;
 this is only a feature added for backwards compatibility.
 
+This option can be used more than once.
+
 =head2 C<no_forced_deps>
 
 Suitable for distributions that do not wish to add a C<test requires>
@@ -214,7 +229,7 @@ test will gracefully skip checks if these modules are not available.
 
 Available since version 0.015.
 
-=for Pod::Coverage filename gather_files munge_files register_prereqs
+=for Pod::Coverage mvp_multivalue_args filename gather_files munge_files register_prereqs
 
 =head1 BACKGROUND
 
@@ -257,9 +272,10 @@ use Test::More tests => {{ $test_count }};
 
 SKIP: {
 {{
-    if ($module) {
-        require Module::Runtime;
-        my $filename = Module::Runtime::module_notional_filename($module);
+    keys %$modules
+    ? join("}\n\nSKIP: {\n", map {
+        my $module = $_;
+        my $filename = $modules->{$module};
         <<"CHECK_CONFLICTS";
     eval 'require $module; ${module}->check_conflicts';
     skip('no $module module found', 1) if not \$INC{'$filename'};
@@ -267,11 +283,8 @@ SKIP: {
     diag \$@ if \$@;
     pass 'conflicts checked via $module';
 CHECK_CONFLICTS
-    }
-    else
-    {
-        "    skip 'no conflicts module found to check against', 1;\n";
-    }
+    } sort keys %$modules)
+    : "    skip 'no conflicts module found to check against', 1;\n";
 }}}
 
 {{

@@ -63,7 +63,7 @@ cmp_deeply(
                     class => 'Dist::Zilla::Plugin::Test::CheckBreaks',
                     config => superhashof({
                         'Dist::Zilla::Plugin::Test::CheckBreaks' => {
-                            conflicts_module => 'Moose::Conflicts',
+                            conflicts_module => [ 'Moose::Conflicts' ],
                             no_forced_deps => 0,
                         },
                     }),
