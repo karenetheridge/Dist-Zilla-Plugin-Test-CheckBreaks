@@ -159,7 +159,7 @@ CONFLICTS
 
     subtest 'run the generated test' => sub
     {
-        pushd $build_dir;
+        my $wd = pushd $build_dir;
         do $file;
         warn $@ if $@;
     };
