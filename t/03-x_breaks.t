@@ -27,11 +27,11 @@ my $tzil = Builder->from_config(
                 ],
             ),
             path(qw(source lib Foo.pm)) => "package Foo;\n1;\n",
-            # @INC contains . by default, so these modules will be found by CPAN::Meta::Check.
-            path(qw(source ClassA.pm)) => "package ClassA;\n\$ClassA::VERSION = '1.0';\n1;",
-            path(qw(source ClassB.pm)) => "package ClassB;\n\$ClassB::VERSION = '1.0';\n1;",
-            path(qw(source ClassC.pm)) => "package ClassC;\n\$ClassC::VERSION = '1.0';\n1;",
-            path(qw(source ClassD.pm)) => "package ClassD;\n\$ClassD::VERSION = '1.0';\n1;",
+            # we will add perl5 lib to @INC
+            path(qw(perl5 lib ClassA.pm)) => "package ClassA;\n\$ClassA::VERSION = '1.0';\n1;",
+            path(qw(perl5 lib ClassB.pm)) => "package ClassB;\n\$ClassB::VERSION = '1.0';\n1;",
+            path(qw(perl5 lib ClassC.pm)) => "package ClassC;\n\$ClassC::VERSION = '1.0';\n1;",
+            path(qw(perl5 lib ClassD.pm)) => "package ClassD;\n\$ClassD::VERSION = '1.0';\n1;",
         },
     },
 );
@@ -108,7 +108,10 @@ subtest 'run the generated test' => sub
     my $saved_stderr = $tb->failure_output;
     $tb->failure_output($tb->output);
 
+    local @INC = (path($tzil->tempdir, qw(perl5 lib))->stringify, @INC);
+
     do $file;
+    die $@ if $@;
 
     $tb->failure_output($saved_stderr);
 
