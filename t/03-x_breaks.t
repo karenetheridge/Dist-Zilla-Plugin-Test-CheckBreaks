@@ -7,6 +7,7 @@ use Test::DZil;
 use Path::Tiny;
 use File::pushd 'pushd';
 use Test::Deep;
+use CPAN::Meta::Check;
 
 use lib 't/lib';
 
@@ -23,6 +24,10 @@ my $tzil = Builder->from_config(
                     'ClassB' => '<= 20.0',  # fails
                     'ClassC' => '== 1.0',   # fails
                     'ClassD' => '!= 1.0',   # passes
+                    CPAN::Meta::Check->VERSION >= '0.014' ? (
+                        'ClassE' => '<= 1.0',   # fails
+                        'ClassF' => '!= 1.0',   # fails
+                    ) : (),
                   }
                 ],
             ),
@@ -32,6 +37,8 @@ my $tzil = Builder->from_config(
             path(qw(perl5 lib ClassB.pm)) => "package ClassB;\n\$ClassB::VERSION = '1.0';\n1;",
             path(qw(perl5 lib ClassC.pm)) => "package ClassC;\n\$ClassC::VERSION = '1.0';\n1;",
             path(qw(perl5 lib ClassD.pm)) => "package ClassD;\n\$ClassD::VERSION = '1.0';\n1;",
+            path(qw(perl5 lib ClassE.pm)) => "package ClassE;\n\n1;",  # no $VERSION
+            path(qw(perl5 lib ClassF.pm)) => "package ClassF;\n\n1;",  # no $VERSION
         },
     },
 );
@@ -54,6 +61,10 @@ my @expected_break_specs = (
     '"ClassB".*"<= 20.0"',
     '"ClassC".*"== 1.0"',
     '"ClassD".*"!= 1.0"',
+    CPAN::Meta::Check->VERSION >= '0.014' ? (
+        '"ClassE".*"<= 1.0"',
+        '"ClassF".*"!= 1.0"',
+    ) : (),
 );
 
 like($content, qr/$_/, 'test checks the right version range') foreach @expected_break_specs;
@@ -79,6 +90,10 @@ cmp_deeply(
             'ClassB' => '<= 20.0',
             'ClassC' => '== 1.0',
             'ClassD' => '!= 1.0',
+            CPAN::Meta::Check->VERSION >= '0.014' ? (
+                'ClassE' => '<= 1.0',
+                'ClassF' => '!= 1.0',
+            ) : (),
         },
         x_Dist_Zilla => superhashof({
             plugins => supersetof(
@@ -130,6 +145,10 @@ cmp_deeply(
         'ClassB' => $is_defined,
         'ClassC' => $is_defined,
         'ClassD' => undef,
+        CPAN::Meta::Check->VERSION >= '0.014' ? (
+            'ClassE' => $is_defined,
+            'ClassF' => $is_defined,
+        ) : (),
     },
     'breakages checked, with the correct results achieved',
 );
