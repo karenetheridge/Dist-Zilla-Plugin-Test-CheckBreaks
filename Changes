@@ -1,5 +1,7 @@
 Revision history for Dist-Zilla-Plugin-Test-CheckBreaks
 
+{{$NEXT}}
+
 0.017     2016-10-17 05:49:20Z
           - the 'conflicts_module' option can now be used more than once.
 
