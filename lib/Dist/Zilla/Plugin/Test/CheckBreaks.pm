@@ -218,7 +218,7 @@ There is no error if the module does not exist. This test does not require
 L<[Conflicts]|Dist::Zilla::Plugin::Conflicts> to be used in your distribution;
 this is only a feature added for backwards compatibility.
 
-This option can be used more than once.
+This option can be used more than once starting with version 0.017.
 
 =head2 C<no_forced_deps>
 
