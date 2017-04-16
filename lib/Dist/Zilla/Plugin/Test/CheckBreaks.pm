@@ -290,25 +290,30 @@ CHECK_CONFLICTS
 {{
     if (keys %$breaks)
     {
-        my $dumper = Data::Dumper->new([ $breaks ], [ 'breaks' ]);
-        $dumper->Sortkeys(1);
-        $dumper->Indent(1);
-        $dumper->Useqq(1);
+        my $dumped = Data::Dumper->new([ $breaks ], [ 'breaks' ])
+            ->Sortkeys(1)
+            ->Indent(1)
+            ->Useqq(1)
+            ->Dump;
         my $dist_name = $dist->name;
 
-        my $breaks_content = ''
-        . '# this data duplicates x_breaks in META.json' . "\n"
-        . 'my ' . $dumper->Dump
+        my $breaks_content = <<CHECK_BREAKS_header;
+# this data duplicates x_breaks in META.json
+my $dumped
+CHECK_BREAKS_header
 
-        . "\n" . join("\n", $no_forced_deps
-            ?
-                ("skip 'This information-only test requires CPAN::Meta::Requirements', 0\n    if not eval 'require CPAN::Meta::Requirements';",
-                 "skip 'This information-only test requires CPAN::Meta::Check $cmc_prereq', 0\n    if not eval 'require CPAN::Meta::Check; CPAN::Meta::Check->VERSION($cmc_prereq)';")
-            :
-                ('use CPAN::Meta::Requirements;', "use CPAN::Meta::Check $cmc_prereq;"))
-        . "\n\n"
+        $breaks_content .= $no_forced_deps ? <<CHECK_BREAKS_prereq_nodeps
+skip 'This information-only test requires CPAN::Meta::Requirements', 0
+    if not eval 'require CPAN::Meta::Requirements';
+skip 'This information-only test requires CPAN::Meta::Check $cmc_prereq', 0
+    if not eval 'require CPAN::Meta::Check; CPAN::Meta::Check->VERSION($cmc_prereq)';
+CHECK_BREAKS_prereq_nodeps
+            : <<CHECK_BREAKS_prereq_deps;
+use CPAN::Meta::Requirements;
+use CPAN::Meta::Check $cmc_prereq;
+CHECK_BREAKS_prereq_deps
 
-    . <<'CHECK_BREAKS_1b'
+        $breaks_content .= "\n" . <<'CHECK_BREAKS_checks';
 my $reqs = CPAN::Meta::Requirements->new;
 $reqs->add_string_requirement($_, $breaks->{$_}) foreach keys %$breaks;
 
@@ -316,14 +321,14 @@ our $result = CPAN::Meta::Check::check_requirements($reqs, 'conflicts');
 
 if (my @breaks = grep { defined $result->{$_} } keys %$result)
 {
-CHECK_BREAKS_1b
-    . "    diag 'Breakages found with $dist_name:';\n"
-    . <<'CHECK_BREAKS_2'
+CHECK_BREAKS_checks
+
+        $breaks_content .= "    diag 'Breakages found with $dist_name:';\n"
+            . <<'CHECK_BREAKS_diag';
     diag "$result->{$_}" for sort @breaks;
     diag "\n", 'You should now update these modules!';
 }
-CHECK_BREAKS_2
-        ;
+CHECK_BREAKS_diag
 
         if ($no_forced_deps) {
             $breaks_content =~ s/^(?=.)/    /mg;
