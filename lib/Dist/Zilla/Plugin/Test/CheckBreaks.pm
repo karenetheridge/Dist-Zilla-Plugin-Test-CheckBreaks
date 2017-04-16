@@ -295,7 +295,8 @@ CHECK_CONFLICTS
         $dumper->Indent(1);
         $dumper->Useqq(1);
         my $dist_name = $dist->name;
-        ($no_forced_deps ? 'SKIP: {' . "\n" : '')
+
+        my $breaks_content = ''
         . '# this data duplicates x_breaks in META.json' . "\n"
         . 'my ' . $dumper->Dump
 
@@ -322,7 +323,13 @@ CHECK_BREAKS_1b
     diag "\n", 'You should now update these modules!';
 }
 CHECK_BREAKS_2
-        . ($no_forced_deps ? '}' . "\n" : '')
+        ;
+
+        if ($no_forced_deps) {
+            $breaks_content =~ s/^(?=.)/    /mg;
+            $breaks_content = 'SKIP: {' . "\n" . $breaks_content . '}';
+        }
+        $breaks_content;
     }
     else { q{pass 'no x_breaks data to check';} . "\n" }
 }}
