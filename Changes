@@ -1,6 +1,6 @@
 Revision history for Dist-Zilla-Plugin-Test-CheckBreaks
 
-{{$NEXT}}
+0.018     2017-04-17 00:24:22Z
           - fixed use of skip(..., 0) so messages are properly displayed
 
 0.017     2016-10-17 05:49:20Z
