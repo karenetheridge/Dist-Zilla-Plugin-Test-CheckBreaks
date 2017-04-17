@@ -165,7 +165,8 @@ sub _test_count {
     my $test_count = $self->conflicts_module;
     ++$test_count if not $test_count;
 
-    ++$test_count if not keys %{ $self->_x_breaks_data };
+    # ...and one for the x_breaks section, even if empty
+    ++$test_count;
     return $test_count;
 }
 
@@ -303,9 +304,9 @@ my $dumped
 CHECK_BREAKS_header
 
         $breaks_content .= $no_forced_deps ? <<CHECK_BREAKS_prereq_nodeps
-skip 'This information-only test requires CPAN::Meta::Requirements', 0
+skip 'This information-only test requires CPAN::Meta::Requirements', 1
     if not eval 'require CPAN::Meta::Requirements';
-skip 'This information-only test requires CPAN::Meta::Check $cmc_prereq', 0
+skip 'This information-only test requires CPAN::Meta::Check $cmc_prereq', 1
     if not eval 'require CPAN::Meta::Check; CPAN::Meta::Check->VERSION($cmc_prereq)';
 CHECK_BREAKS_prereq_nodeps
             : <<CHECK_BREAKS_prereq_deps;
@@ -328,6 +329,8 @@ CHECK_BREAKS_checks
     diag "$result->{$_}" for sort @breaks;
     diag "\n", 'You should now update these modules!';
 }
+
+pass 'checked x_breaks data';
 CHECK_BREAKS_diag
 
         if ($no_forced_deps) {
