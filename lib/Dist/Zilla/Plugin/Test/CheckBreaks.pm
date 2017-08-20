@@ -278,7 +278,7 @@ SKIP: {
         my $module = $_;
         my $filename = $modules->{$module};
         <<"CHECK_CONFLICTS";
-    eval 'require $module; ${module}->check_conflicts';
+    eval { +require $module; ${module}->check_conflicts };
     skip('no $module module found', 1) if not \$INC{'$filename'};
 
     diag \$@ if \$@;
@@ -305,9 +305,9 @@ CHECK_BREAKS_header
 
         $breaks_content .= $no_forced_deps ? <<CHECK_BREAKS_prereq_nodeps
 skip 'This information-only test requires CPAN::Meta::Requirements', 1
-    if not eval 'require CPAN::Meta::Requirements';
+    if not eval { +require CPAN::Meta::Requirements };
 skip 'This information-only test requires CPAN::Meta::Check $cmc_prereq', 1
-    if not eval 'require CPAN::Meta::Check; CPAN::Meta::Check->VERSION($cmc_prereq)';
+    if not eval { +require CPAN::Meta::Check; CPAN::Meta::Check->VERSION($cmc_prereq) };
 CHECK_BREAKS_prereq_nodeps
             : <<CHECK_BREAKS_prereq_deps;
 use CPAN::Meta::Requirements;
