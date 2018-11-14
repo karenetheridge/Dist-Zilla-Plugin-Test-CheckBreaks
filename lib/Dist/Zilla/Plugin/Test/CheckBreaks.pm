@@ -66,12 +66,12 @@ has conflicts_module => (
     default => sub {
         my $self = shift;
 
-        $self->log_debug('no conflicts_module provided; looking for one in the dist...');
+        $self->log_debug('no conflicts_module provided; looking for one in the distribution...');
 
         my $mmd = $self->module_metadata_for_file($self->zilla->main_module);
         my $module = ($mmd->packages_inside)[0] . '::Conflicts';
 
-        # check that the file exists in the dist (it should never be shipped
+        # check that the file exists in the distribution (it should never be shipped
         # separately!)
         my $conflicts_filename = module_notional_filename($module);
         if (any { $_->name eq path('lib', $conflicts_filename) } @{ $self->zilla->files })
