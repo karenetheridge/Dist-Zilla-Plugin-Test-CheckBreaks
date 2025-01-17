@@ -92,10 +92,10 @@ sub munge_files
     my $self = shift;
 
     # module => filename
-    my $modules = { map {
-        require Module::Runtime;
-        $_ => Module::Runtime::module_notional_filename($_)
-    } $self->conflicts_module };
+    require Module::Runtime;
+    my $modules = +{ map
+        +($_ => Module::Runtime::module_notional_filename($_)),
+        $self->conflicts_module };
 
     my $breaks_data = $self->_x_breaks_data;
     $self->log_debug('no x_breaks metadata and no conflicts module found to check against: adding no-op test')
@@ -320,7 +320,7 @@ $reqs->add_string_requirement($_, $breaks->{$_}) foreach keys %$breaks;
 
 our $result = CPAN::Meta::Check::check_requirements($reqs, 'conflicts');
 
-if (my @breaks = grep { defined $result->{$_} } keys %$result)
+if (my @breaks = grep defined $result->{$_}, keys %$result)
 {
 CHECK_BREAKS_checks
 
