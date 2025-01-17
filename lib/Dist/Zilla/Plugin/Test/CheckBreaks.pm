@@ -266,6 +266,7 @@ use warnings;
 # this test was generated with {{ ref $plugin }} {{ $plugin->VERSION }}
 
 use Test::More tests => {{ $test_count }};
+use Term::ANSIColor 'colored';
 
 SKIP: {
 {{
@@ -318,10 +319,10 @@ our $result = CPAN::Meta::Check::check_requirements($reqs, 'conflicts');
 if (my @breaks = grep defined $result->{$_}, keys %$result) {
 CHECK_BREAKS_checks
 
-        $breaks_content .= "    diag 'Breakages found with $dist_name:';\n"
+        $breaks_content .= "    diag colored('Breakages found with $dist_name:', 'yellow');\n"
             . <<'CHECK_BREAKS_diag';
-    diag "$result->{$_}" for sort @breaks;
-    diag "\n", 'You should now update these modules!';
+    diag colored("$result->{$_}", 'yellow') for sort @breaks;
+    diag "\n", colored('You should now update these modules!', 'yellow');
 }
 
 pass 'checked x_breaks data';
