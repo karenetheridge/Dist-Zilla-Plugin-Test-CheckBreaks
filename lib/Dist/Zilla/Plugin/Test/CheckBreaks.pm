@@ -30,8 +30,7 @@ has no_forced_deps => (
 
 sub filename { path('t', 'zzz-check-breaks.t') }
 
-around dump_config => sub
-{
+around dump_config => sub {
     my ($orig, $self) = @_;
     my $config = $self->$orig;
 
@@ -44,8 +43,7 @@ around dump_config => sub
     return $config;
 };
 
-sub gather_files
-{
+sub gather_files {
     my $self = shift;
 
     require Dist::Zilla::File::InMemory;
@@ -87,8 +85,7 @@ has conflicts_module => (
 
 sub _cmc_prereq { '0.011' }
 
-sub munge_files
-{
+sub munge_files {
     my $self = shift;
 
     # module => filename
@@ -123,8 +120,7 @@ sub munge_files
     return;
 }
 
-sub register_prereqs
-{
+sub register_prereqs {
     my $self = shift;
 
     $self->zilla->register_prereqs(
@@ -289,8 +285,7 @@ CHECK_CONFLICTS
 }}}
 
 {{
-    if (keys %$breaks)
-    {
+    if (keys %$breaks) {
         my $dumped = Data::Dumper->new([ $breaks ], [ 'breaks' ])
             ->Sortkeys(1)
             ->Indent(1)
@@ -320,8 +315,7 @@ $reqs->add_string_requirement($_, $breaks->{$_}) foreach keys %$breaks;
 
 our $result = CPAN::Meta::Check::check_requirements($reqs, 'conflicts');
 
-if (my @breaks = grep defined $result->{$_}, keys %$result)
-{
+if (my @breaks = grep defined $result->{$_}, keys %$result) {
 CHECK_BREAKS_checks
 
         $breaks_content .= "    diag 'Breakages found with $dist_name:';\n"
