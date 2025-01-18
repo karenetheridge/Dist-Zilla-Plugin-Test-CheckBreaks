@@ -1,6 +1,6 @@
 Revision history for Dist-Zilla-Plugin-Test-CheckBreaks
 
-{{$NEXT}}
+0.020     2025-01-18 00:20:00Z
           - now using Term::ANSIColor to make the breakage warnings more
             obvious
 
