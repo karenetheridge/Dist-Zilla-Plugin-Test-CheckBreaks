@@ -5,7 +5,7 @@ package Dist::Zilla::Plugin::Test::CheckBreaks;
 # ABSTRACT: Generate a test that shows what modules you are breaking
 # KEYWORDS: distribution prerequisites upstream dependencies modules conflicts breaks breakages metadata
 
-our $VERSION = '0.020';
+our $VERSION = '0.021';
 
 use Moose;
 with (
